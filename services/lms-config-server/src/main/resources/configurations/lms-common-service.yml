@@ -16,3 +16,4 @@ spring:
     baseline-version: 0
     user: ${spring.datasource.username}
     password: ${spring.datasource.password}
+    locations: classpath:db/migration
