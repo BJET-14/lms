@@ -17,3 +17,8 @@ spring:
     user: ${spring.datasource.username}
     password: ${spring.datasource.password}
     locations: classpath:db/migration
+
+lms:
+  openapi:
+    stage-url: http://aws-lms-stage.com
+    prod-url: http://aws-lms-prod.com
