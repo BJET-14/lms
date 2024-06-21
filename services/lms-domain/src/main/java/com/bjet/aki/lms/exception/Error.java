@@ -1,4 +1,4 @@
-package com.bjet.aki.exception;
+package com.bjet.aki.lms.exception;
 
 import lombok.Getter;
 

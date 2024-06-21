@@ -1,6 +1,6 @@
-package com.bjet.aki.exception;
+package com.bjet.aki.lms.exception;
 
-import static com.bjet.aki.exception.Error.COURSE_NOT_FOUND_EXCEPTION;
+import static com.bjet.aki.lms.exception.Error.COURSE_NOT_FOUND_EXCEPTION;
 
 public class CourseNotFoundException extends CommonException{
 

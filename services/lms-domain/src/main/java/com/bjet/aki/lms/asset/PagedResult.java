@@ -1,4 +1,4 @@
-package com.bjet.aki.asset;
+package com.bjet.aki.lms.asset;
 
 import lombok.Getter;
 import lombok.Setter;

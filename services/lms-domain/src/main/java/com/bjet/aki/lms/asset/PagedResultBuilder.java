@@ -1,4 +1,4 @@
-package com.bjet.aki.asset;
+package com.bjet.aki.lms.asset;
 
 import org.springframework.data.domain.Page;
 
