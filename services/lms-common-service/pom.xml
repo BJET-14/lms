@@ -47,12 +47,6 @@
 			<groupId>com.bjet.aki</groupId>
 			<artifactId>lms-domain</artifactId>
 			<version>1.0.1</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework.data</groupId>
-					<artifactId>spring-data-commons</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>

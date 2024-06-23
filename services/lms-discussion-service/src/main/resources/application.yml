@@ -1,3 +1,7 @@
+server:
+  servlet:
+    context-path: /discussions
+
 spring:
   config:
     import: optional:configserver:http://localhost:8888

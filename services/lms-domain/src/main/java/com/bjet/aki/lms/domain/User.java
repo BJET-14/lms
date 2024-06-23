@@ -1,4 +1,4 @@
-package com.bjet.aki.domain;
+package com.bjet.aki.lms.domain;
 
 import lombok.Getter;
 import lombok.Setter;

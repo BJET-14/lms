@@ -1,5 +1,5 @@
 server:
-  port: 8050
+  port: 8055
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -23,6 +23,13 @@ spring:
     locations: classpath:db/migration
 
 lms:
+  security:
+    jwt:
+      secret-key: LUjqHh5XU4v9LaFVFVQd1aFPqhm1sFHE
+      expiration: 86400000 # a day
+      refresh-token:
+        expiration: 604800000 # 7 days
+
   openapi:
     stage-url: http://localhost:${server.port}
     prod-url: http://localhost:${server.port}
