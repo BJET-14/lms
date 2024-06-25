@@ -1,6 +1,7 @@
 package com.bjet.aki.lms.filter;
 
 import com.bjet.aki.lms.service.JwtService;
+import com.bjet.aki.lms.token.TokenRepository;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
@@ -15,10 +16,12 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 
     private final RouteValidator routeValidator;
     private final JwtService jwtService;
-    public AuthenticationFilter(RouteValidator routeValidator, JwtService jwtService) {
+    private final TokenRepository tokenRepository;
+    public AuthenticationFilter(RouteValidator routeValidator, JwtService jwtService, TokenRepository tokenRepository) {
         super(Config.class);
         this.routeValidator = routeValidator;
         this.jwtService = jwtService;
+        this.tokenRepository = tokenRepository;
     }
 
     @Override
@@ -32,7 +35,10 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 if (authHeader != null && authHeader.startsWith("Bearer ")) {
                     authHeader = authHeader.substring(7);
                 }
-                if (jwtService.isExpired(authHeader)) {
+                var isTokenValid = tokenRepository.findByToken(authHeader)
+                        .map(t -> !t.isExpired() && !t.isRevoked())
+                        .orElse(false);
+                if (jwtService.isExpired(authHeader) || !isTokenValid) {
                     return onError(exchange, HttpStatus.UNAUTHORIZED);
                 }
             }
