@@ -12,15 +12,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 public class Token {
+
     @Id
     @GeneratedValue
-    private Long id;
+    public Integer id;
+
     @Column(unique = true)
-    private String token;
+    public String token;
+
     @Enumerated(EnumType.STRING)
-    private TokenType tokenType = TokenType.BEARER;
-    private boolean revoked;
-    private boolean expired;
-    @Column(name = "user_id")
-    private Long userId;
+    public TokenType tokenType = TokenType.BEARER;
+
+    public boolean revoked;
+
+    public boolean expired;
+
+    @Column(name = "USER_ID")
+    public Long userId;
 }

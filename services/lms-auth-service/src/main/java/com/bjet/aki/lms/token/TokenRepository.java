@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
-public interface TokenRepository extends JpaRepository<Token, Long> {
+public interface TokenRepository extends JpaRepository<Token, Integer> {
     @Query(value = """
       select t from Token t \s
       where t.userId = :id and (t.expired = false or t.revoked = false)\s

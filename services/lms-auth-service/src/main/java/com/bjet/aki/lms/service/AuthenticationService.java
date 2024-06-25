@@ -1,10 +1,8 @@
 package com.bjet.aki.lms.service;
 
-import com.bjet.aki.lms.config.UserDetailsConfig;
 import com.bjet.aki.lms.domain.AuthenticationRequest;
 import com.bjet.aki.lms.domain.AuthenticationResponse;
 import com.bjet.aki.lms.domain.User;
-import com.bjet.aki.lms.security.JwtService;
 import com.bjet.aki.lms.token.Token;
 import com.bjet.aki.lms.token.TokenRepository;
 import com.bjet.aki.lms.token.TokenType;
@@ -14,23 +12,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -42,9 +32,8 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final TokenRepository tokenRepository;
-
-    public void registerUser(User user){
-        logger.info("Save request from LMS-GATEWAY: registerUser , email={}", user.getEmail());
+    public void registerUser(User user) {
+        logger.info("Save request from lms-auth-service: registerUser , email={}", user.getEmail());
         // checking user already existed or not
         Boolean existResponse = restTemplate.getForObject("http://lms-common-service/commons/users/exist?email=" + user.getEmail(), Boolean.class);
         if(existResponse != null ){
@@ -58,21 +47,18 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        logger.info("Initiating authentication: email={}", request.getEmail());
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()
                 )
         );
-
-        User response = restTemplate.getForObject("http://lms-common-service/commons/users/email?email=" + request.getEmail(), User.class);
-        if(response != null){
-            UserDetails userDetails = UserDetailsConfig.getUserDetails(response);
-            var jwtToken = jwtService.generateToken(userDetails);
-            var refreshToken = jwtService.generateRefreshToken(userDetails);
-            revokeAllUserTokens(response);
-            saveUserToken(response, jwtToken);
+        User user = restTemplate.getForObject("http://lms-common-service/commons/users/email?email=" + request.getEmail(), User.class);
+        if(user != null){
+            var jwtToken = jwtService.generateToken(user.getEmail());
+            var refreshToken = jwtService.generateRefreshToken(user.getEmail());
+            revokeAllUserTokens(user.getId());
+            saveUserToken(user.getId(), jwtToken);
             return AuthenticationResponse.builder()
                     .accessToken(jwtToken)
                     .refreshToken(refreshToken)
@@ -83,8 +69,8 @@ public class AuthenticationService {
         }
     }
 
-    private void revokeAllUserTokens(User user) {
-        var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
+    private void revokeAllUserTokens(Long userId) {
+        var validUserTokens = tokenRepository.findAllValidTokenByUser(userId);
         if (validUserTokens.isEmpty())
             return;
         validUserTokens.forEach(token -> {
@@ -94,9 +80,9 @@ public class AuthenticationService {
         tokenRepository.saveAll(validUserTokens);
     }
 
-    private void saveUserToken(User user, String jwtToken) {
+    private void saveUserToken(Long userId, String jwtToken) {
         var token = Token.builder()
-                .userId(user.getId())
+                .userId(userId)
                 .token(jwtToken)
                 .tokenType(TokenType.BEARER)
                 .expired(false)
@@ -105,30 +91,37 @@ public class AuthenticationService {
         tokenRepository.save(token);
     }
 
-    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public AuthenticationResponse refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String refreshToken;
         final String userEmail;
         if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
-            return;
+            throw new RuntimeException("missing authorization header");
         }
         refreshToken = authHeader.substring(7);
         userEmail = jwtService.extractUsername(refreshToken);
         if (userEmail != null) {
-            ResponseEntity<User> userResponse = restTemplate.getForObject("http://lms-common-service/commons/users/email?email" + userEmail, ResponseEntity.class);
-            if(userResponse != null && userResponse.getStatusCode().is2xxSuccessful()){
-                UserDetails userDetails = UserDetailsConfig.getUserDetails(userResponse.getBody());
-                if (jwtService.isTokenValid(refreshToken, userDetails)) {
-                    var accessToken = jwtService.generateToken(userDetails);
-                    revokeAllUserTokens(userResponse.getBody());
-                    saveUserToken(userResponse.getBody(), accessToken);
+            User userResponse = restTemplate.getForObject("http://lms-common-service/commons/users/email?email" + userEmail, User.class);
+            if(userResponse != null){
+                if (jwtService.isTokenValid(refreshToken, userResponse.getEmail())) {
+                    var accessToken = jwtService.generateToken(userResponse.getEmail());
+                    revokeAllUserTokens(userResponse.getId());
+                    saveUserToken(userResponse.getId(), accessToken);
                     var authResponse = AuthenticationResponse.builder()
                             .accessToken(accessToken)
                             .refreshToken(refreshToken)
                             .build();
-                    new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
+                    return authResponse;
                 }
             }
+        } else {
+            throw new RuntimeException("un authorized access to application");
         }
+        return null;
+    }
+
+    public Boolean validateToken(String token) {
+        String email = jwtService.extractUsername(token);
+        return jwtService.isTokenValid(token, email);
     }
 }
