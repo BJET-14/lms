@@ -4,7 +4,11 @@ import com.bjet.aki.lms.service.JwtService;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
 
 @Component
 public class AuthenticationFilter extends AbstractGatewayFilterFactory<AuthenticationFilter.Config> {
@@ -28,14 +32,18 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 if (authHeader != null && authHeader.startsWith("Bearer ")) {
                     authHeader = authHeader.substring(7);
                 }
-                try {
-                    jwtService.isExpired(authHeader);
-                } catch (Exception e) {
-                    throw new RuntimeException("un authorized access to application");
+                if (jwtService.isExpired(authHeader)) {
+                    return onError(exchange, HttpStatus.UNAUTHORIZED);
                 }
             }
             return chain.filter(exchange);
         });
+    }
+
+    private Mono<Void> onError(ServerWebExchange exchange, HttpStatus httpStatus) {
+        ServerHttpResponse response = exchange.getResponse();
+        response.setStatusCode(httpStatus);
+        return response.setComplete();
     }
 
     public static class Config {
