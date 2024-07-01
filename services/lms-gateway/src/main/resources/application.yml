@@ -4,3 +4,15 @@ spring:
   application:
     name: lms-gateway
 
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    configUrl: ${server.servlet.contextPath}/v3/api-docs/swagger-config
+    url: ${server.servlet.contextPath}/v3/api-docs
+    urls:
+      - name: api-common-service
+        url: /commons/v3/api-docs
+      - name: api-operation-service
+        url: /operations/v3/api-docs
+

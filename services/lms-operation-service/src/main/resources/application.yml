@@ -1,7 +1,3 @@
-server:
-  servlet:
-    context-path: /operations
-
 spring:
   config:
     import: optional:configserver:http://localhost:8888

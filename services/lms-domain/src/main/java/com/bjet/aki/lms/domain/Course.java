@@ -1,0 +1,18 @@
+package com.bjet.aki.lms.domain;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
+import java.time.LocalDate;
+
+@Getter
+@Setter
+@Accessors(chain = true)
+public class Course {
+    private long id;
+    private String title;
+    private String description;
+    private LocalDate startDate;
+    private boolean isComplete;
+}
