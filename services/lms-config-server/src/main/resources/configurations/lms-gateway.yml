@@ -30,7 +30,7 @@ spring:
             - AuthenticationFilter
 
         - id: lms-operation-service
-          uri: lb://http://LMS-OPERATION-SERVICE
+          uri: lb://LMS-OPERATION-SERVICE
           predicates:
             - Path=/operations/**
           filters:
