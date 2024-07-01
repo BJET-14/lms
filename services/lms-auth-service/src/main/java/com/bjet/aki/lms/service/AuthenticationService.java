@@ -62,6 +62,7 @@ public class AuthenticationService {
             return AuthenticationResponse.builder()
                     .accessToken(jwtToken)
                     .refreshToken(refreshToken)
+                    .role(user.getRole())
                     .build();
         } else{
             logger.error("Failed authentication from lms-gateway. Exception throws from lms-common-service. email={}", request.getEmail());
