@@ -12,4 +12,3 @@ The application is designed to use Domain Driven Design pattern with microservic
 5. <b> lms-operation-service: </b>
 6. <b> lms-discussion-service: </b>
 7. <b> lms-gateway: </b>
-aaa
