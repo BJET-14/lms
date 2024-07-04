@@ -19,3 +19,12 @@ lms:
       expiration: 86400000 # a day
       refresh-token:
         expiration: 604800000 # 7 days
+  openapi:
+    stage-url: http://localhost:${server.port}
+    prod-url: http://localhost:${server.port}
+
+springdoc:
+  api-docs:
+    path: /lms-auth-service/v3/api-docs
+  swagger-ui:
+    path: /lms-auth-service/swagger-ui.html

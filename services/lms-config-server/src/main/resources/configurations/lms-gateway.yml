@@ -43,6 +43,23 @@ spring:
           filters:
             - AuthenticationFilter
 
+        - id: lms-auth-swagger-service
+          uri: lb:http://LMS-AUTH-SERVICE
+          predicates:
+            - Path=/lms-auth-service/v3/api-docs
+            - Method=GET
+
+        - id: lms-common-swagger-service
+          uri: lb:http://LMS-COMMON-SERVICE
+          predicates:
+            - Path=/lms-common-service/v3/api-docs
+            - Method=GET
+
+        - id: lms-operation-swagger-service
+          uri: lb:http://LMS-OPERATION-SERVICE
+          predicates:
+            - Path=/lms-operation-service/v3/api-docs
+            - Method=GET
 lms:
   security:
     jwt:

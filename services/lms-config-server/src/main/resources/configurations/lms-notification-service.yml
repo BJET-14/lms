@@ -1,0 +1,25 @@
+server:
+  port: 8054
+
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: lms
+    password: tcvwgkffttwmtcdl
+    default-encoding: UTF-8
+    properties:
+      mail:
+        mime:
+          charset: UTF
+        smtp:
+          writetimeout: 10000
+          connectiontimeout: 10000
+          timeout: 10000
+          auth: true
+          starttls:
+            enable: true
+            required: true
+    verify:
+      host: http://localhost:3000
+

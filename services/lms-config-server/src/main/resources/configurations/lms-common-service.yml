@@ -26,3 +26,9 @@ lms:
   openapi:
     stage-url: http://localhost:${server.port}
     prod-url: http://localhost:${server.port}
+
+springdoc:
+  api-docs:
+    path: /lms-common-service/v3/api-docs
+  swagger-ui:
+    path: /lms-common-service/swagger-ui.html

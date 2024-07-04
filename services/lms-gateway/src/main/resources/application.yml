@@ -8,11 +8,16 @@ springdoc:
   api-docs:
     enabled: true
   swagger-ui:
-    configUrl: ${server.servlet.contextPath}/v3/api-docs/swagger-config
-    url: ${server.servlet.contextPath}/v3/api-docs
+    enabled: true
+    path: /swagger-ui.html
+    config-url: /v3/api-docs/swagger-config
     urls:
-      - name: api-common-service
-        url: /commons/v3/api-docs
-      - name: api-operation-service
-        url: /operations/v3/api-docs
+#      - url: /v3/api-docs
+#        name: API Gateway Service
+      - url: /lms-common-service/v3/api-docs
+        name: Common Service
+      - url: /lms-operation-service/v3/api-docs
+        name: Operation Service
+      - url: /lms-auth-service/v3/api-docs
+        name: Auth Service
 
