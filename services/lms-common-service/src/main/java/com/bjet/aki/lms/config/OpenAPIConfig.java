@@ -1,5 +1,8 @@
 package com.bjet.aki.lms.config;
 
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,6 +47,14 @@ public class OpenAPIConfig {
                 .description("This API exposes endpoints to manage lms common service.")
                 .license(mitLicense);
 
-        return new OpenAPI().info(info).servers(List.of(stageServer, prodServer));
+        SecurityScheme securityScheme = new SecurityScheme()
+                .name("bearerAuth")
+                .description("JWT auth description")
+                .scheme("bearer")
+                .type(SecurityScheme.Type.HTTP)
+                .bearerFormat("JWT")
+                .in(SecurityScheme.In.HEADER);
+
+        return new OpenAPI().info(info).servers(List.of(stageServer, prodServer)).components(new Components().addSecuritySchemes("bearerAuth", securityScheme)).addSecurityItem(new SecurityRequirement().addList("bearerAuth"));
     }
 }
