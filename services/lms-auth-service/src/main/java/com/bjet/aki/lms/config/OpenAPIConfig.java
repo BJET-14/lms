@@ -15,20 +15,14 @@ import java.util.List;
 @Configuration
 public class OpenAPIConfig {
 
-    @Value("${lms.openapi.stage-url}")
-    private String stageUrl;
+    @Value("${lms.openapi.dev-url}")
+    private String devUrl;
 
-    @Value("${lms.openapi.prod-url}")
-    private String prodUrl;
     @Bean
     public OpenAPI openAPI() {
-        Server stageServer = new Server();
-        stageServer.setUrl(stageUrl);
-        stageServer.setDescription("Server URL in Development environment");
-
-        Server prodServer = new Server();
-        prodServer.setUrl(prodUrl);
-        prodServer.setDescription("Server URL in Production environment");
+        Server devServer = new Server();
+        devServer.setUrl(devUrl);
+        devServer.setDescription("Server URL in Development environment");
 
         Contact contact = new Contact();
         contact.setEmail("smiraj2507@gmail.com");
@@ -44,7 +38,7 @@ public class OpenAPIConfig {
                 .description("This API exposes endpoints to manage lms auth service.")
                 .license(mitLicense);
 
-        return new OpenAPI().info(info).servers(List.of(stageServer, prodServer));
+        return new OpenAPI().info(info).servers(List.of(devServer));
     }
 }
 

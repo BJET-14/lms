@@ -13,7 +13,7 @@ public class CourseSpecification {
         return (root, query, cb) -> {
             Predicate predicate = cb.conjunction();
             if (title != null) {
-                predicate = cb.and(predicate, cb.like(root.get("title"), "%" + title + "%"));
+                predicate = cb.and(predicate, cb.like(cb.lower(root.get("title")), "%" + title.toLowerCase() + "%"));
             }
             if (startDateFrom != null) {
                 predicate =

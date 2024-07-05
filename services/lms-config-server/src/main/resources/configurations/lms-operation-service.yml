@@ -23,8 +23,7 @@ spring:
 
 lms:
   openapi:
-    stage-url: http://localhost:${server.port}
-    prod-url: http://localhost:${server.port}
+    dev-url: http://localhost:${lms-gateway-port:8055}
 
 springdoc:
   api-docs:

@@ -65,5 +65,4 @@ lms:
     jwt:
       secret-key: dd38da31ac47e34a6c1753ac559de1448996fc2c2e5fae28f2651c5108ed14f2
   openapi:
-    stage-url: http://localhost:${server.port}
-    prod-url: http://localhost:${server.port}
+    dev-url: http://localhost:8055

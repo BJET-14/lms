@@ -1,5 +1,8 @@
 package com.bjet.aki.lms.config;
 
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,20 +18,13 @@ import java.util.List;
 @Configuration
 public class OpenAPIConfig {
 
-    @Value("${lms.openapi.stage-url}")
-    private String stageUrl;
-
-    @Value("${lms.openapi.prod-url}")
-    private String prodUrl;
+    @Value("${lms.openapi.dev-url}")
+    private String devUrl;
     @Bean
     public OpenAPI openAPI() {
-        Server stageServer = new Server();
-        stageServer.setUrl(stageUrl);
-        stageServer.setDescription("Server URL in Development environment");
-
-        Server prodServer = new Server();
-        prodServer.setUrl(prodUrl);
-        prodServer.setDescription("Server URL in Production environment");
+        Server devServer = new Server();
+        devServer.setUrl(devUrl);
+        devServer.setDescription("Server URL in Development environment");
 
         Contact contact = new Contact();
         contact.setEmail("smiraj2507@gmail.com");
@@ -44,6 +40,14 @@ public class OpenAPIConfig {
                 .description("This API exposes endpoints to manage lms operations.")
                 .license(mitLicense);
 
-        return new OpenAPI().info(info).servers(List.of(stageServer, prodServer));
+        SecurityScheme securityScheme = new SecurityScheme()
+                .name("bearerAuth")
+                .description("JWT auth description")
+                .scheme("bearer")
+                .type(SecurityScheme.Type.HTTP)
+                .bearerFormat("JWT")
+                .in(SecurityScheme.In.HEADER);
+
+        return new OpenAPI().info(info).servers(List.of(devServer)).components(new Components().addSecuritySchemes("bearerAuth", securityScheme)).addSecurityItem(new SecurityRequirement().addList("bearerAuth"));
     }
 }
