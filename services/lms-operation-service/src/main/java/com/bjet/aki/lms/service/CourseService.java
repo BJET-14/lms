@@ -3,11 +3,13 @@ package com.bjet.aki.lms.service;
 import com.bjet.aki.lms.asset.ListResultBuilder;
 import com.bjet.aki.lms.asset.PagedResult;
 import com.bjet.aki.lms.asset.PagedResultBuilder;
+import com.bjet.aki.lms.asset.ResultBuilder;
 import com.bjet.aki.lms.domain.Course;
 import com.bjet.aki.lms.jpa.CourseEntity;
 import com.bjet.aki.lms.mapper.CourseMapper;
 import com.bjet.aki.lms.repository.CourseRepository;
 import com.bjet.aki.lms.specification.CourseSpecification;
+import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,19 +29,24 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final CourseMapper courseMapper;
 
-    public void saveCourse(Course course){
+    public void saveCourse(Course course) {
         logger.info("Saving request for course");
         CourseEntity courseEntity = courseMapper.toEntity().map(course);
         courseRepository.save(courseEntity);
     }
 
-    public List<Course> findAllCourses(String title, LocalDate startDateFrom, LocalDate startDateTo, Boolean isComplete){
+    public List<Course> findAllCourses(String title, LocalDate startDateFrom, LocalDate startDateTo, Boolean isComplete) {
         List<CourseEntity> courses = courseRepository.findAll(CourseSpecification.findCourses(title, startDateFrom, startDateTo, isComplete));
         return ListResultBuilder.build(courses, courseMapper.toDomain());
     }
 
-    public PagedResult<Course> findAllCourses(Pageable pageable, String title, LocalDate startDateFrom, LocalDate startDateTo, Boolean isComplete){
+    public PagedResult<Course> findAllCourses(Pageable pageable, String title, LocalDate startDateFrom, LocalDate startDateTo, Boolean isComplete) {
         Page<CourseEntity> courses = courseRepository.findAll(CourseSpecification.findCourses(title, startDateFrom, startDateTo, isComplete), pageable);
         return PagedResultBuilder.build(courses, courseMapper.toDomain());
+    }
+
+    public Course findCourseById(Long id) {
+        CourseEntity courseEntity = courseRepository.findById(id).orElseThrow(() -> new NotFoundException("Could not find course with id: " + id));
+        return ResultBuilder.build(courseEntity, courseMapper.toDomain());
     }
 }

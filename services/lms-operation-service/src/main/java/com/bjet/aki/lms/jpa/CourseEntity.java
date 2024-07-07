@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Accessors(chain = true)
 @Entity
 @Table(name = "COURSES")
-public class CourseEntity extends BaseEntity{
+public class CourseEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_COURSE")

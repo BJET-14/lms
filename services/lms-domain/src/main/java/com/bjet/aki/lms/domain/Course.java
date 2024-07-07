@@ -14,5 +14,6 @@ public class Course {
     private String title;
     private String description;
     private LocalDate startDate;
+    private LocalDate endDate;
     private boolean isComplete;
 }
