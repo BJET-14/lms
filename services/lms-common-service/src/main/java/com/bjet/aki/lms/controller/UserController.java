@@ -1,12 +1,18 @@
 package com.bjet.aki.lms.controller;
 
+import com.bjet.aki.lms.asset.PagedResult;
+import com.bjet.aki.lms.domain.Role;
 import com.bjet.aki.lms.domain.User;
 import com.bjet.aki.lms.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/commons/users")
@@ -16,6 +22,30 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+
+    @GetMapping
+    public ResponseEntity<?> getUsers(@RequestParam(name = "asPage", required = false, defaultValue = "false") Boolean asPage,
+                                      @RequestParam(defaultValue = "0") int page,
+                                      @RequestParam(defaultValue = "20") int size,
+                                      @RequestParam(name = "firstName", required = false) String firstName,
+                                      @RequestParam(name = "lastName", required = false) String lastName,
+                                      @RequestParam(name = "email", required = false) String email,
+                                      @RequestParam(name = "role", required = false) Role role){
+        if(asPage){
+            Pageable pageable = PageRequest.of(page, size);
+            PagedResult<User> productsAsPage = userService.findAllUsers(pageable, firstName, lastName, email, role);
+            return ResponseEntity.ok(productsAsPage);
+        }
+        List<User> productsAsList = userService.findAllUsers(firstName, lastName, email, role);
+        return ResponseEntity.ok(productsAsList);
+    }
+
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<?> getUsers(@PathVariable("id") Long id){
+        User user = userService.findbyId(id);
+        return ResponseEntity.ok(user);
+    }
+
     @PostMapping
     public ResponseEntity<?> registerUser(@RequestBody User user){
         userService.saveUser(user);

@@ -9,3 +9,7 @@ spring:
       port: 27017
       database: lms
       authentication-database: admin
+
+lms:
+  deployment:
+    environment: dev

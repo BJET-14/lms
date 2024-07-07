@@ -23,3 +23,6 @@ spring:
     verify:
       host: http://localhost:3000
 
+lms:
+  deployment:
+    environment: dev

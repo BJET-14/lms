@@ -4,9 +4,10 @@ import lombok.Getter;
 
 @Getter
 public enum Error {
-    COURSE_NOT_FOUND_EXCEPTION("001"),
-    TEACHER_NOT_FOUND_EXCEPTION("002"),
-    STUDENT_NOT_FOUND_EXCEPTION("003"),
+    USER_NOT_FOUND_EXCEPTION("001"),
+    COURSE_NOT_FOUND_EXCEPTION("002"),
+    TEACHER_NOT_FOUND_EXCEPTION("003"),
+    STUDENT_NOT_FOUND_EXCEPTION("004"),
     ;
     // region <R>
     Error(String code) {

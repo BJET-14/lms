@@ -65,4 +65,6 @@ lms:
     jwt:
       secret-key: dd38da31ac47e34a6c1753ac559de1448996fc2c2e5fae28f2651c5108ed14f2
   openapi:
-    dev-url: http://localhost:8055
+    dev-url: http://${lms-gateway-host:localhost}:${lms-gateway-port:8055}
+  deployment:
+    environment: dev

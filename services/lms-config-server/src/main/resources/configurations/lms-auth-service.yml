@@ -20,7 +20,9 @@ lms:
       refresh-token:
         expiration: 604800000 # 7 days
   openapi:
-    dev-url: http://localhost:${lms-gateway-port:8055}
+    dev-url: http://${lms-gateway-host:localhost}:${lms-gateway-port:8055}
+  deployment:
+    environment: dev
 
 springdoc:
   api-docs:
