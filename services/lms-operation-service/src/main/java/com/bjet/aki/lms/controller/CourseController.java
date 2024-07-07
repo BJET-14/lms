@@ -23,7 +23,7 @@ public class CourseController {
     private final CourseService courseService;
 
     @GetMapping
-    public ResponseEntity<?> getProducts(
+    public ResponseEntity<?> getCourses(
             @RequestParam(name = "asPage", required = false, defaultValue = "false") Boolean asPage,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
@@ -41,7 +41,7 @@ public class CourseController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> saveProduct(@RequestBody Course course) {
+    public ResponseEntity<Void> saveCourse(@RequestBody Course course) {
         courseService.saveCourse(course);
         return ResponseEntity.accepted().build();
     }
