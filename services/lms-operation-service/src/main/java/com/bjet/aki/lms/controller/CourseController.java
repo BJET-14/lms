@@ -21,6 +21,7 @@ import java.util.List;
 public class CourseController {
 
     private final CourseService courseService;
+
     @GetMapping
     public ResponseEntity<?> getProducts(
             @RequestParam(name = "asPage", required = false, defaultValue = "false") Boolean asPage,
@@ -29,8 +30,8 @@ public class CourseController {
             @RequestParam(name = "title", required = false) String title,
             @RequestParam(name = "startDateFrom", required = false) LocalDate startDateFrom,
             @RequestParam(name = "startDateTo", required = false) LocalDate startDateTo,
-            @RequestParam(name = "isComplete", required = false) Boolean isComplete){
-        if(asPage){
+            @RequestParam(name = "isComplete", required = false) Boolean isComplete) {
+        if (asPage) {
             Pageable pageable = PageRequest.of(page, size);
             PagedResult<Course> productsAsPage = courseService.findAllCourses(pageable, title, startDateFrom, startDateTo, isComplete);
             return ResponseEntity.ok(productsAsPage);
@@ -40,8 +41,13 @@ public class CourseController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> saveProduct(@RequestBody Course course){
+    public ResponseEntity<Void> saveProduct(@RequestBody Course course) {
         courseService.saveCourse(course);
         return ResponseEntity.accepted().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Course> findCourseById(@PathVariable Long id) {
+        return ResponseEntity.ok(courseService.findCourseById(id));
     }
 }

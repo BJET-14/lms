@@ -13,7 +13,7 @@ public class CourseMapper {
 
     private final CourseRepository courseRepository;
 
-    public ResultMapper<Course, CourseEntity> toEntity(){
+    public ResultMapper<Course, CourseEntity> toEntity() {
         return domain -> courseRepository.findById(domain.getId())
                 .orElseGet(CourseEntity::new)
                 .setTitle(domain.getTitle())
@@ -21,11 +21,13 @@ public class CourseMapper {
                 .setStartDate(domain.getStartDate());
     }
 
-    public ResultMapper<CourseEntity, Course> toDomain(){
+    public ResultMapper<CourseEntity, Course> toDomain() {
         return entity -> new Course()
                 .setId(entity.getId())
                 .setTitle(entity.getTitle())
                 .setDescription(entity.getDescription())
-                .setStartDate(entity.getStartDate());
+                .setStartDate(entity.getStartDate())
+                .setEndDate(entity.getEndDate())
+                .setComplete(entity.getIsComplete());
     }
 }
