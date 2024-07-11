@@ -4,9 +4,12 @@ import com.bjet.aki.lms.domain.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,4 +23,7 @@ public class TeacherEntity extends UserEntity{
 
     @Column(name = "TOTAL_EXPERIENCE")
     private Double yearsOfExperience;
+
+    @OneToMany(mappedBy = "teacher")
+    private List<AcademicQualificationEntity> academicQualifications;
 }
