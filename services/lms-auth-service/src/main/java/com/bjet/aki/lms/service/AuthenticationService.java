@@ -3,17 +3,16 @@ package com.bjet.aki.lms.service;
 import com.bjet.aki.lms.domain.AuthenticationRequest;
 import com.bjet.aki.lms.domain.AuthenticationResponse;
 import com.bjet.aki.lms.domain.User;
+import com.bjet.aki.lms.domain.UserSaveRequest;
 import com.bjet.aki.lms.token.Token;
 import com.bjet.aki.lms.token.TokenRepository;
 import com.bjet.aki.lms.token.TokenType;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,9 +40,17 @@ public class AuthenticationService {
                 throw new RuntimeException("User already exist");
             }
         }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        restTemplate.postForObject("http://lms-common-service/commons/users", user, Void.class);
-        logger.info("User saved successfully. email={}", user.getEmail());
+        UserSaveRequest request = UserSaveRequest.builder()
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .profilePicture(user.getProfilePicture())
+                .role(user.getRole())
+                .encryptedPassword(passwordEncoder.encode(user.getPassword()))
+                .password(user.getPassword())
+                .build();
+        restTemplate.postForObject("http://lms-common-service/commons/users", request, Void.class);
+        logger.info("User saved successfully. email={}", request.getEmail());
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {

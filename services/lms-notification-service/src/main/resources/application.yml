@@ -3,3 +3,14 @@ spring:
     import: optional:configserver:http://localhost:8888
   application:
     name: lms-notification-service
+
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: registrationGroup,enrollGroup,assignGroup
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: '*'
+        spring.json.type.mapping: registrationSuccessNotificationRequest:com.bjet.aki.lms.domain.RegistrationSuccessNotificationRequest

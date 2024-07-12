@@ -3,6 +3,7 @@ package com.bjet.aki.lms.controller;
 import com.bjet.aki.lms.asset.PagedResult;
 import com.bjet.aki.lms.domain.Role;
 import com.bjet.aki.lms.domain.User;
+import com.bjet.aki.lms.domain.UserSaveRequest;
 import com.bjet.aki.lms.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -47,8 +48,8 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> registerUser(@RequestBody User user){
-        userService.saveUser(user);
+    public ResponseEntity<?> registerUser(@RequestBody UserSaveRequest request){
+        userService.saveUser(request);
         return ResponseEntity.accepted().build();
     }
 

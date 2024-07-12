@@ -1,7 +1,9 @@
 package com.bjet.aki.lms.mapper;
 
 import com.bjet.aki.lms.asset.ResultMapper;
+import com.bjet.aki.lms.domain.RegistrationSuccessNotificationRequest;
 import com.bjet.aki.lms.domain.User;
+import com.bjet.aki.lms.domain.UserSaveRequest;
 import com.bjet.aki.lms.jpa.AdminEntity;
 import com.bjet.aki.lms.jpa.StudentEntity;
 import com.bjet.aki.lms.jpa.TeacherEntity;
@@ -11,6 +13,7 @@ import com.bjet.aki.lms.repository.StudentRepository;
 import com.bjet.aki.lms.repository.TeacherRepository;
 import com.bjet.aki.lms.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -32,30 +35,38 @@ public class UserMapper {
                 .setPassword(passwordRequired ? entity.getPassword() : null);
     }
 
-    public ResultMapper<User, StudentEntity> toStudentEntity(){
+    public ResultMapper<UserSaveRequest, StudentEntity> toStudentEntity(){
         return domain -> (StudentEntity) userRepository.findByEmail(domain.getEmail())
                 .orElseGet(StudentEntity::new)
                 .setEmail(domain.getEmail())
                 .setFirstName(domain.getFirstName())
                 .setLastName(domain.getLastName())
-                .setPassword(domain.getPassword());
+                .setPassword(domain.getEncryptedPassword());
     }
 
-    public ResultMapper<User, AdminEntity> toAdminEntity(){
+    public ResultMapper<UserSaveRequest, AdminEntity> toAdminEntity(){
         return domain -> (AdminEntity) userRepository.findByEmail(domain.getEmail())
                 .orElseGet(AdminEntity::new)
                 .setEmail(domain.getEmail())
                 .setFirstName(domain.getFirstName())
                 .setLastName(domain.getLastName())
-                .setPassword(domain.getPassword());
+                .setPassword(domain.getEncryptedPassword());
     }
 
-    public ResultMapper<User, TeacherEntity> toTeacherEntity(){
+    public ResultMapper<UserSaveRequest, TeacherEntity> toTeacherEntity(){
         return domain -> (TeacherEntity) userRepository.findByEmail(domain.getEmail())
                 .orElseGet(TeacherEntity::new)
                 .setEmail(domain.getEmail())
                 .setFirstName(domain.getFirstName())
                 .setLastName(domain.getLastName())
+                .setPassword(domain.getEncryptedPassword());
+    }
+
+    public ResultMapper<UserSaveRequest, RegistrationSuccessNotificationRequest> toNotificationRequest() {
+        return domain -> new RegistrationSuccessNotificationRequest()
+                .setFirstName(domain.getFirstName())
+                .setLastName(domain.getLastName())
+                .setEmail(domain.getEmail())
                 .setPassword(domain.getPassword());
     }
 }

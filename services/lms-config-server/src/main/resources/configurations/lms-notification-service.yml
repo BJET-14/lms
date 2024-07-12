@@ -2,11 +2,19 @@ server:
   port: 8054
 
 spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/lms
+    username: root
+    password: root123
+  jpa:
+    hibernate:
+      ddl-auto: update
   mail:
     host: smtp.gmail.com
     port: 587
-    username: lms
-    password: tcvwgkffttwmtcdl
+    username: bjet.aki.info@gmail.com
+    password: ehbh zgxi pzft wasi
     default-encoding: UTF-8
     properties:
       mail:
@@ -25,4 +33,5 @@ spring:
 
 lms:
   deployment:
-    environment: dev
+    host: ${LMS_HOST:http://localhost:3000}
+  template_dir: ${LMS_TEMPLATE_DIR:/}

@@ -5,6 +5,7 @@ import com.bjet.aki.lms.asset.PagedResult;
 import com.bjet.aki.lms.asset.PagedResultBuilder;
 import com.bjet.aki.lms.domain.Role;
 import com.bjet.aki.lms.domain.User;
+import com.bjet.aki.lms.domain.UserSaveRequest;
 import com.bjet.aki.lms.exception.CommonException;
 import com.bjet.aki.lms.jpa.UserEntity;
 import com.bjet.aki.lms.mapper.UserMapper;
@@ -31,8 +32,9 @@ public class UserService {
     private final StudentRepository studentRepository;
     private final AdminRepository adminRepository;
     private final TeacherRepository teacherRepository;
+    private final EmailNotificationService notificationService;
 
-    public void saveUser(User user){
+    public void saveUser(UserSaveRequest user){
         logger.info("Request to save user. email={}", user.getEmail());
         switch (user.getRole()){
             case ADMIN -> {
@@ -52,6 +54,7 @@ public class UserService {
             }
             default -> throw new IllegalStateException("Unexpected value: " + user.getRole());
         }
+        notificationService.sendEmailNotificationForRegistration(userMapper.toNotificationRequest().map(user));
     }
 
     public User findByEmail(String email) {

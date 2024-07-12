@@ -5,27 +5,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
-
-import java.time.format.DateTimeFormatter;
 
 @Service
 @RequiredArgsConstructor
 public class EmailTemplateService {
 
-    @Value("${lms.deployment.environment}")
-    private String deploymentEnvironment;
+    @Value("${lms.deployment.host}")
+    private String deploymentHost;
 
     Logger logger = LoggerFactory.getLogger(EmailTemplateService.class);
-    private static final String DATE_FORMAT = "dd-MM-yyyy HH:mm";
     private final SpringTemplateEngine templateEngine;
-    DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(DATE_FORMAT);
 
-    public String generateRegistrationEmail(String firstName, String lastName, String email, String emailConfirmationUrl){
+    public String getRegistrationSuccessEmailTemplate(String firstName, String lastName, String email, String password){
         logger.info("Generating a verification email for user.email={}",
                 email);
-        return null;
+        Context context = new Context();
+        String fullName = firstName + " " + lastName;
+        context.setVariable("full_name", fullName);
+        context.setVariable("email", email);
+        context.setVariable("password", password);
+        context.setVariable("redirectUrl", deploymentHost);
+        return templateEngine.process("user-welcome-email-signup.html", context);
     }
-
-
 }
