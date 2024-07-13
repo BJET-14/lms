@@ -9,19 +9,19 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 @Entity
-@Table(name = "TEACHER_ACADEMIC_QUALIFICATION")
-public class AcademicQualificationEntity {
+@Table(name = "TEACHER_TRAINING")
+public class TrainingEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_ACAD_QUALIFICATION")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_TRAINING")
     @SequenceGenerator(
-            name = "SEQ_ACAD_QUALIFICATION",
+            name = "SEQ_TRAINING",
             allocationSize = 1,
-            sequenceName = "SEQ_ACAD_QUALIFICATION")
+            sequenceName = "SEQ_TRAINING")
     private long id;
     private String name;
-    private String universityName; // universityName
+    private String organization;
     private String year;
-    private Double result;
+    private String description;
 
     @ManyToOne
     @JoinColumn(name = "teacher_id")

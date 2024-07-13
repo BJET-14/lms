@@ -7,10 +7,10 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class AcademicQualification {
+public class Training {
     private long id;
     private String name;
-    private String universityName;
+    private String organization;
     private String year;
-    private Double result;
+    private String description;
 }

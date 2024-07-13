@@ -26,4 +26,8 @@ public class TeacherEntity extends UserEntity{
 
     @OneToMany(mappedBy = "teacher")
     private List<AcademicQualificationEntity> academicQualifications;
+
+    @OneToMany(mappedBy = "teacher")
+    private List<TrainingEntity> trainings;
+
 }
