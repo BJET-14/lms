@@ -1,7 +1,6 @@
 package com.bjet.aki.lms.jpa;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -21,7 +20,7 @@ public class ModuleEntity extends BaseEntity {
     private long id;
     private String title;
     private String description;
-    @NotNull
     @ManyToOne
+    @JoinColumn(name = "course_id")
     private CourseEntity course;
 }

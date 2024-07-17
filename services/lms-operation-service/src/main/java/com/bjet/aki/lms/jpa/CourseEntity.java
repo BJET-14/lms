@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -26,4 +27,6 @@ public class CourseEntity extends BaseEntity {
     private LocalDate startDate;
     private LocalDate endDate;
     private Boolean isComplete = Boolean.FALSE;
+    @OneToMany(mappedBy = "course")
+    private List<ModuleEntity> modules;
 }

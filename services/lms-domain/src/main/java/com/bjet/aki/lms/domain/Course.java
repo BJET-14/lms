@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,4 +17,5 @@ public class Course {
     private LocalDate startDate;
     private LocalDate endDate;
     private boolean isComplete;
+    private List<Module> modules;
 }
