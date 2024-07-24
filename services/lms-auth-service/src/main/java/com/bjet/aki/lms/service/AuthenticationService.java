@@ -1,9 +1,9 @@
 package com.bjet.aki.lms.service;
 
-import com.bjet.aki.lms.domain.AuthenticationRequest;
-import com.bjet.aki.lms.domain.AuthenticationResponse;
-import com.bjet.aki.lms.domain.User;
-import com.bjet.aki.lms.domain.UserSaveRequest;
+import com.bjet.aki.lms.model.AuthenticationRequest;
+import com.bjet.aki.lms.model.AuthenticationResponse;
+import com.bjet.aki.lms.model.User;
+import com.bjet.aki.lms.model.UserSaveRequest;
 import com.bjet.aki.lms.token.Token;
 import com.bjet.aki.lms.token.TokenRepository;
 import com.bjet.aki.lms.token.TokenType;

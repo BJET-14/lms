@@ -1,8 +1,8 @@
 package com.bjet.aki.lms.controller;
 
-import com.bjet.aki.lms.domain.AuthenticationRequest;
-import com.bjet.aki.lms.domain.AuthenticationResponse;
-import com.bjet.aki.lms.domain.User;
+import com.bjet.aki.lms.model.AuthenticationRequest;
+import com.bjet.aki.lms.model.AuthenticationResponse;
+import com.bjet.aki.lms.model.User;
 import com.bjet.aki.lms.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

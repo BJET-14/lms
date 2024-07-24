@@ -1,9 +1,9 @@
 package com.bjet.aki.lms.mapper;
 
 import com.bjet.aki.lms.asset.ResultMapper;
-import com.bjet.aki.lms.domain.RegistrationSuccessNotificationRequest;
-import com.bjet.aki.lms.domain.User;
-import com.bjet.aki.lms.domain.UserSaveRequest;
+import com.bjet.aki.lms.model.RegistrationSuccessNotificationRequest;
+import com.bjet.aki.lms.model.User;
+import com.bjet.aki.lms.model.UserSaveRequest;
 import com.bjet.aki.lms.jpa.AdminEntity;
 import com.bjet.aki.lms.jpa.StudentEntity;
 import com.bjet.aki.lms.jpa.TeacherEntity;
@@ -13,7 +13,6 @@ import com.bjet.aki.lms.repository.StudentRepository;
 import com.bjet.aki.lms.repository.TeacherRepository;
 import com.bjet.aki.lms.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.aspectj.weaver.ast.Not;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,6 +1,6 @@
 package com.bjet.aki.lms.jpa;
 
-import com.bjet.aki.lms.domain.Role;
+import com.bjet.aki.lms.model.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;

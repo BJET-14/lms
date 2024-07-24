@@ -1,6 +1,6 @@
 package com.bjet.aki.lms.specification;
 
-import com.bjet.aki.lms.domain.Role;
+import com.bjet.aki.lms.model.Role;
 import com.bjet.aki.lms.jpa.UserEntity;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
