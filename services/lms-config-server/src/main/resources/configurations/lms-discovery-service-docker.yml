@@ -1,0 +1,15 @@
+eureka:
+  instance:
+    hostname: ${eureka.hostname:localhost}
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+
+lms:
+  deployment:
+    environment: ${LMS_DEPLOYMENT_ENV:stage}
+
+server:
+  port: 8761

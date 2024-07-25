@@ -1,0 +1,27 @@
+server:
+  port: 8050
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://lms-postgres:5432/lms
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:root123}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+lms:
+  openapi:
+    dev-url: http://${LMS_GATEWAY_HOST:localhost}:8055
+  deployment:
+    environment: ${LMS_DEPLOYMENT_ENV:stage}
+
+springdoc:
+  api-docs:
+    path: /lms-common-service/v3/api-docs
+  swagger-ui:
+    path: /lms-common-service/swagger-ui.html

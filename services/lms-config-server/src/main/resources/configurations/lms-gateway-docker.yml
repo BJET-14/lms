@@ -1,0 +1,70 @@
+server:
+  port: 8055
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://lms-postgres:5432/lms
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:root123}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  cloud:
+    gateway:
+      routes:
+        - id: lms-auth-service
+          uri: lb:http://LMS-AUTH-SERVICE
+          predicates:
+            - Path=/auth/**
+
+        - id: lms-common-service
+          uri: lb:http://LMS-COMMON-SERVICE
+          predicates:
+            - Path=/commons/**
+          filters:
+            - AuthenticationFilter
+
+        - id: lms-operation-service
+          uri: lb://LMS-OPERATION-SERVICE
+          predicates:
+            - Path=/operations/**
+          filters:
+            - AuthenticationFilter
+
+        - id: lms-discussion-service
+          uri: lb://LMS-DISCUSSION-SERVICE
+          predicates:
+            - Path=/discussions/**
+          filters:
+            - AuthenticationFilter
+
+        - id: lms-auth-swagger-service
+          uri: lb:http://LMS-AUTH-SERVICE
+          predicates:
+            - Path=/lms-auth-service/v3/api-docs
+            - Method=GET
+
+        - id: lms-common-swagger-service
+          uri: lb:http://LMS-COMMON-SERVICE
+          predicates:
+            - Path=/lms-common-service/v3/api-docs
+            - Method=GET
+
+        - id: lms-operation-swagger-service
+          uri: lb:http://LMS-OPERATION-SERVICE
+          predicates:
+            - Path=/lms-operation-service/v3/api-docs
+            - Method=GET
+lms:
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET:dd38da31ac47e34a6c1753ac559de1448996fc2c2e5fae28f2651c5108ed14f2}
+  openapi:
+    dev-url: http://${LMS_GATEWAY_HOST:localhost}:8055
+  deployment:
+    environment: ${LMS_DEPLOYMENT_ENV:stage}
