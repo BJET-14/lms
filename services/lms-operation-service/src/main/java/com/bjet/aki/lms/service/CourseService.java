@@ -6,8 +6,10 @@ import com.bjet.aki.lms.asset.PagedResultBuilder;
 import com.bjet.aki.lms.asset.ResultBuilder;
 import com.bjet.aki.lms.domain.Course;
 import com.bjet.aki.lms.jpa.CourseEntity;
+import com.bjet.aki.lms.jpa.ModuleEntity;
 import com.bjet.aki.lms.mapper.CourseMapper;
 import com.bjet.aki.lms.repository.CourseRepository;
+import com.bjet.aki.lms.repository.ModuleRepository;
 import com.bjet.aki.lms.specification.CourseSpecification;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -27,12 +29,22 @@ public class CourseService {
     Logger logger = LoggerFactory.getLogger(CourseService.class);
 
     private final CourseRepository courseRepository;
+    private final ModuleRepository moduleRepository;
     private final CourseMapper courseMapper;
 
     public void saveCourse(Course course) {
         logger.info("Saving request for course");
         CourseEntity courseEntity = courseMapper.toEntity().map(course);
         courseRepository.save(courseEntity);
+
+        // Save the modules associated with the course
+        List<ModuleEntity> modules = courseEntity.getModules();
+        if (modules != null) {
+            for (ModuleEntity module : modules) {
+                module.setCourse(courseEntity);
+                moduleRepository.save(module);
+            }
+        }
     }
 
     public List<Course> findAllCourses(String title, LocalDate startDateFrom, LocalDate startDateTo, Boolean isComplete) {
