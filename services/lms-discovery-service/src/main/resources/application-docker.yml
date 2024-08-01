@@ -1,19 +1,9 @@
-server:
-  port: 8761
-
-spring:
-  application:
-    name: lms-discovery-service
-
 eureka:
   instance:
-    hostname: localhost
+    hostname: discovery-service
   client:
     registerWithEureka: false
     fetchRegistry: false
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:8761/eureka/
 
-lms:
-  deployment:
-    environment: ${LMS_DEPLOYMENT_ENV:stage}

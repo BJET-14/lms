@@ -1,10 +1,7 @@
-server:
-  port: 8053
-
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://lms-postgres:5432/lms
+    url: jdbc:postgresql://pdb:5432/lms
     username: ${DB_USER:root}
     password: ${DB_PASSWORD:root123}
   jpa:
@@ -14,6 +11,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
+    database: postgresql
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-service:8761/eureka/
 
 
 lms:
@@ -27,9 +30,3 @@ lms:
     dev-url: http://${LMS_GATEWAY_HOST:localhost}:8055
   deployment:
     environment: ${LMS_DEPLOYMENT_ENV:stage}
-
-springdoc:
-  api-docs:
-    path: /lms-auth-service/v3/api-docs
-  swagger-ui:
-    path: /lms-auth-service/swagger-ui.html

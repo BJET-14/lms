@@ -1,0 +1,117 @@
+services:
+  pdb:
+    container_name: pdb
+    image: postgres:alpine
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root123
+      POSTGRES_DB: lms
+      PGDATA: /data/postgres
+    volumes:
+      - local-dep-lms-postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - local-dep-lms-net
+    restart: unless-stopped
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - local-dep-lms-net
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+    networks:
+      - local-dep-lms-net
+
+  discovery-service:
+    image: lms/lms-discovery-service:1.0.1
+    container_name: discovery-service
+    environment:
+      ACTIVE_PROFILE: docker
+    ports:
+      - "8761:8761"
+    networks:
+      - local-dep-lms-net
+
+  auth-service:
+    image: lms/lms-auth-service:1.0.1
+    container_name: auth-service
+    depends_on:
+      - pdb
+    environment:
+      ACTIVE_PROFILE: docker
+    networks:
+      - local-dep-lms-net
+
+  common-service:
+    image: lms/lms-common-service:1.0.1
+    container_name: common-service
+    depends_on:
+      - pdb
+      - kafka
+    environment:
+      ACTIVE_PROFILE: docker
+    networks:
+      - local-dep-lms-net
+
+  operation-service:
+    image: lms/lms-operation-service:1.0.1
+    container_name: operation-service
+    depends_on:
+      - pdb
+      - kafka
+    environment:
+      ACTIVE_PROFILE: docker
+    networks:
+      - local-dep-lms-net
+
+  notification-service:
+    image: lms/lms-notification-service:1.0.1
+    container_name: notification-service
+    depends_on:
+      - pdb
+      - kafka
+    environment:
+      ACTIVE_PROFILE: docker
+    networks:
+      - local-dep-lms-net
+
+  gateway:
+    image: lms/lms-gateway:1.0.1
+    container_name: gateway
+    ports:
+      - "8055:8055"
+    depends_on:
+      - common-service
+      - notification-service
+    environment:
+      ACTIVE_PROFILE: docker
+    networks:
+      - local-dep-lms-net
+
+networks:
+  local-dep-lms-net:
+    driver: bridge
+
+volumes:
+  local-dep-lms-postgres:

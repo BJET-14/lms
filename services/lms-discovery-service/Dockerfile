@@ -11,16 +11,15 @@ RUN mvn clean package -Dskiptests
 FROM amazoncorretto:17
 
 # Arguments
-ARG PROFILE=dev
-ARG APP_VERSION=1.0.0
+ARG PROFILE=docker
+ARG APP_VERSION=1.0.1
 
 WORKDIR /app
 COPY --from=build /build/target/lms-discovery-service-*.jar /app/
 
-EXPOSE 8053
-ENV DB_URL=jdbc:postgresql://lms-postgres:5432/lms
+EXPOSE 8761
 ENV ACTIVE_PROFILE=${PROFILE}
 ENV JAR_VERSION=${APP_VERSION}
 
 
-CMD java -jar -Dspring.profile.active=${ACTIVE_PROFILE} -Dspring.datasource.url=${DB_URL} lms-discovery-service-${JAR_VERSION}.jar
+CMD java -jar -Dspring.profiles.active=${ACTIVE_PROFILE} lms-discovery-service-${JAR_VERSION}.jar

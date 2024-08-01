@@ -1,7 +1,32 @@
+server:
+  port: 8053
+
 spring:
-  config:
-    import: optional:configserver:http://localhost:8888
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/lms
+    username: root
+    password: root123
+  jpa:
+    hibernate:
+      ddl-auto: update
   application:
     name: lms-auth-service
 
+lms:
+  security:
+    jwt:
+      secret-key: dd38da31ac47e34a6c1753ac559de1448996fc2c2e5fae28f2651c5108ed14f2
+      expiration: 86400000 # a day
+      refresh-token:
+        expiration: 604800000 # 7 days
+  openapi:
+    dev-url: http://${lms-gateway-host:localhost}:${lms-gateway-port:8055}
+  deployment:
+    environment: dev
 
+springdoc:
+  api-docs:
+    path: /lms-auth-service/v3/api-docs
+  swagger-ui:
+    path: /lms-auth-service/swagger-ui.html
