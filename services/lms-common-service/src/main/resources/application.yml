@@ -1,13 +1,38 @@
-spring:
-  config:
-    import: optional:configserver:http://localhost:8888
-  application:
-    name: lms-common-service
+server:
+  port: 8050
 
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/lms
+    username: root
+    password: root123
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
   kafka:
     producer:
       bootstrap-servers: localhost:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
-        spring.json.type.mapping: registrationSuccessNotificationRequest:com.bjet.aki.lms.domain.RegistrationSuccessNotificationRequest
+        spring.json.type.mapping: registrationSuccessNotificationRequest:com.bjet.aki.lms.model.RegistrationSuccessNotificationRequest
+    bootstrap-servers: localhost:9092
+  application:
+    name: lms-common-service
+
+lms:
+  openapi:
+    dev-url: http://${lms-gateway-host:localhost}:${lms-gateway-port:8055}
+  deployment:
+    environment: dev
+
+springdoc:
+  api-docs:
+    path: /lms-common-service/v3/api-docs
+  swagger-ui:
+    path: /lms-common-service/swagger-ui.html

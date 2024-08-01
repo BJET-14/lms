@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://pdb:5432/lms
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:root123}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-service:8761/eureka/
+
+
+lms:
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET:dd38da31ac47e34a6c1753ac559de1448996fc2c2e5fae28f2651c5108ed14f2}
+      expiration: 86400000 # a day
+      refresh-token:
+        expiration: 604800000 # 7 days
+  openapi:
+    dev-url: http://${LMS_GATEWAY_HOST:localhost}:8055
+  deployment:
+    environment: ${LMS_DEPLOYMENT_ENV:stage}

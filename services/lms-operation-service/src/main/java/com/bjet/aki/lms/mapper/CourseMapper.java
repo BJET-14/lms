@@ -3,6 +3,7 @@ package com.bjet.aki.lms.mapper;
 import com.bjet.aki.lms.asset.ResultMapper;
 import com.bjet.aki.lms.domain.Course;
 import com.bjet.aki.lms.domain.Module;
+import com.bjet.aki.lms.model.Course;
 import com.bjet.aki.lms.jpa.CourseEntity;
 import com.bjet.aki.lms.jpa.ModuleEntity;
 import com.bjet.aki.lms.repository.CourseRepository;

@@ -1,9 +1,9 @@
 package com.bjet.aki.lms.controller;
 
 import com.bjet.aki.lms.asset.PagedResult;
-import com.bjet.aki.lms.domain.Role;
-import com.bjet.aki.lms.domain.User;
-import com.bjet.aki.lms.domain.UserSaveRequest;
+import com.bjet.aki.lms.model.Role;
+import com.bjet.aki.lms.model.User;
+import com.bjet.aki.lms.model.UserSaveRequest;
 import com.bjet.aki.lms.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

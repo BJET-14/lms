@@ -1,6 +1,6 @@
 package com.bjet.aki.lms.service;
 
-import com.bjet.aki.lms.domain.RegistrationSuccessNotificationRequest;
+import com.bjet.aki.lms.model.RegistrationSuccessNotificationRequest;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;

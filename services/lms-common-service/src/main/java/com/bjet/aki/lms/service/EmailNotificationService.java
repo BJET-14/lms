@@ -1,6 +1,6 @@
 package com.bjet.aki.lms.service;
 
-import com.bjet.aki.lms.domain.RegistrationSuccessNotificationRequest;
+import com.bjet.aki.lms.model.RegistrationSuccessNotificationRequest;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

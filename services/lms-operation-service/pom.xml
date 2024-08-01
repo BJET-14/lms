@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.bjet.aki</groupId>
 	<artifactId>lms-operation-service</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.1</version>
 	<name>lms-operation-service</name>
 	<description>lms-operation-service</description>
 	<properties>
@@ -31,10 +31,6 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-config</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.kafka</groupId>
 			<artifactId>spring-kafka</artifactId>
 		</dependency>
@@ -46,12 +42,6 @@
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.5.0</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.bjet.aki</groupId>
-			<artifactId>lms-domain</artifactId>
-			<version>1.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>

@@ -1,6 +1,6 @@
 package com.bjet.aki.lms.service;
 
-import com.bjet.aki.lms.domain.User;
+import com.bjet.aki.lms.model.User;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

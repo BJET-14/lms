@@ -1,11 +1,9 @@
 package com.bjet.aki.lms.controller;
 
 import com.bjet.aki.lms.asset.PagedResult;
-import com.bjet.aki.lms.domain.Teacher;
-import com.bjet.aki.lms.domain.User;
+import com.bjet.aki.lms.model.Teacher;
 import com.bjet.aki.lms.service.TeacherService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.ws.rs.Path;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

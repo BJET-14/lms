@@ -1,8 +1,8 @@
 package com.bjet.aki.lms.mapper;
 
 import com.bjet.aki.lms.asset.ResultMapper;
-import com.bjet.aki.lms.domain.AcademicQualification;
-import com.bjet.aki.lms.domain.Teacher;
+import com.bjet.aki.lms.model.AcademicQualification;
+import com.bjet.aki.lms.model.Teacher;
 import com.bjet.aki.lms.jpa.AcademicQualificationEntity;
 import com.bjet.aki.lms.jpa.TeacherEntity;
 import com.bjet.aki.lms.repository.AcademicQualificationRepository;

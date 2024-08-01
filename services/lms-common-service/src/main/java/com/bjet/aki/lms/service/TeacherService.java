@@ -3,7 +3,7 @@ package com.bjet.aki.lms.service;
 import com.bjet.aki.lms.asset.ListResultBuilder;
 import com.bjet.aki.lms.asset.PagedResult;
 import com.bjet.aki.lms.asset.PagedResultBuilder;
-import com.bjet.aki.lms.domain.Teacher;
+import com.bjet.aki.lms.model.Teacher;
 import com.bjet.aki.lms.jpa.TeacherEntity;
 import com.bjet.aki.lms.mapper.TeacherMapper;
 import com.bjet.aki.lms.repository.TeacherRepository;

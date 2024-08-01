@@ -4,7 +4,7 @@ import com.bjet.aki.lms.asset.ListResultBuilder;
 import com.bjet.aki.lms.asset.PagedResult;
 import com.bjet.aki.lms.asset.PagedResultBuilder;
 import com.bjet.aki.lms.asset.ResultBuilder;
-import com.bjet.aki.lms.domain.Course;
+import com.bjet.aki.lms.model.Course;
 import com.bjet.aki.lms.jpa.CourseEntity;
 import com.bjet.aki.lms.jpa.ModuleEntity;
 import com.bjet.aki.lms.mapper.CourseMapper;

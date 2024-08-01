@@ -1,7 +1,7 @@
 package com.bjet.aki.lms.controller;
 
 import com.bjet.aki.lms.asset.PagedResult;
-import com.bjet.aki.lms.domain.Course;
+import com.bjet.aki.lms.model.Course;
 import com.bjet.aki.lms.service.CourseService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
