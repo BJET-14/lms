@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - dev
+      - dev_pipeline
     paths:
       - 'lms-auth-service/**'
       - 'lms-common-service/**'
