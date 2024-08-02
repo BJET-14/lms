@@ -1,0 +1,43 @@
+name: Build and Push Docker Images
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - 'lms-auth-service/**'
+      - 'lms-common-service/**'
+      - 'lms-discovery-service/**'
+      - 'lms-gateway/**'
+      - 'lms-notification-service/**'
+      - 'lms-operation-service/**'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [lms-auth-service, lms-common-service, lms-discovery-service, lms-gateway, lms-notification-service, lms-operation-service]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        run: |
+#          cd ${{ matrix.service }}
+#          docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:${{ github.sha }} .
+#          docker push ${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:${{ github.sha }}
+            echo "Good job Miraj"
+            echo ${{ github.sha }}
+      - name: Logout from Docker Hub
+        run: docker logout
