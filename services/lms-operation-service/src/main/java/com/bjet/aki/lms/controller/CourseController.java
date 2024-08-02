@@ -46,6 +46,11 @@ public class CourseController {
         return ResponseEntity.accepted().build();
     }
 
+    @PutMapping(path = "/{courseId}")
+    public ResponseEntity<Void> updateCourse(@PathVariable(name = "courseId") Long id, @RequestBody Course course) {
+        courseService.uptdateCourse(course);
+        return ResponseEntity.accepted().build();
+    }
     @GetMapping("/{id}")
     public ResponseEntity<Course> findCourseById(@PathVariable Long id) {
         return ResponseEntity.ok(courseService.findCourseById(id));

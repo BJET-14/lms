@@ -61,4 +61,8 @@ public class CourseService {
         CourseEntity courseEntity = courseRepository.findById(id).orElseThrow(() -> new NotFoundException("Could not find course with id: " + id));
         return ResultBuilder.build(courseEntity, courseMapper.toDomain());
     }
+
+    public void uptdateCourse(Course course) {
+
+    }
 }
