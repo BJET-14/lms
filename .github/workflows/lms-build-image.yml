@@ -37,7 +37,7 @@ jobs:
 #          cd ${{ matrix.service }}
 #          docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:${{ github.sha }} .
 #          docker push ${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:${{ github.sha }}
-            echo "Good job Miraj"
-            echo ${{ github.sha }}
+           echo "Good job Miraj"
+
       - name: Logout from Docker Hub
         run: docker logout
