@@ -48,11 +48,26 @@ public class CourseController {
 
     @PutMapping(path = "/{courseId}")
     public ResponseEntity<Void> updateCourse(@PathVariable(name = "courseId") Long id, @RequestBody Course course) {
-        courseService.uptdateCourse(course);
-        return ResponseEntity.accepted().build();
+        boolean isExist = courseService.isExist(id);
+        if(isExist){
+            courseService.updateCourse(course);
+            return ResponseEntity.accepted().build();
+        }
+        return ResponseEntity.notFound().build();
     }
     @GetMapping("/{id}")
     public ResponseEntity<Course> findCourseById(@PathVariable Long id) {
         return ResponseEntity.ok(courseService.findCourseById(id));
+    }
+
+    @DeleteMapping(path = "/{courseId}/modules/{moduleId}")
+    public ResponseEntity<Void> deleteModule(@PathVariable(name = "courseId") Long courseId,
+                                             @PathVariable(name = "moduleId") Long moduleId){
+        boolean courseExist = courseService.isExist(courseId);
+        if(courseExist){
+            courseService.deleteModule(moduleId);
+            return ResponseEntity.accepted().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 }

@@ -62,9 +62,15 @@ public class CourseService {
         return ResultBuilder.build(courseEntity, courseMapper.toDomain());
     }
 
-    public void uptdateCourse(Course course) {
-        CourseEntity courseEntity = courseRepository.findById(course.getId())
-                .orElseThrow(() -> new NotFoundException("Could not find course with id: " + course.getId()));
-        // todo
+    public void updateCourse(Course course) {
+        CourseEntity courseEntity = courseMapper.toEntity().map(course);
+    }
+
+    public boolean isExist(long id) {
+        return courseRepository.existsById(id);
+    }
+
+    public void deleteModule(Long moduleId) {
+        moduleRepository.deleteById(moduleId);
     }
 }
