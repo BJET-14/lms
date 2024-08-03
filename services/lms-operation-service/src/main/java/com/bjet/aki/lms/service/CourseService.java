@@ -63,6 +63,8 @@ public class CourseService {
     }
 
     public void uptdateCourse(Course course) {
-        // Need to work on this
+        CourseEntity courseEntity = courseRepository.findById(course.getId())
+                .orElseThrow(() -> new NotFoundException("Could not find course with id: " + course.getId()));
+        // todo
     }
 }
