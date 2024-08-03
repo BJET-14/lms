@@ -35,10 +35,15 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-#          cd ${{ matrix.service }}
-#          docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:${{ github.sha }} .
-#          docker push ${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:${{ github.sha }}
-           echo "Good job Miraj"
+          echo "Good job Miraj"
+          echo ${{ matrix.service }}
+          echo ${{ github.sha }}
 
       - name: Logout from Docker Hub
         run: docker logout
+
+
+
+#          cd ${{ matrix.service }}
+#          docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:${{ github.sha }} .
+#          docker push ${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:${{ github.sha }}
