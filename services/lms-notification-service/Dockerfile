@@ -17,7 +17,7 @@ ARG APP_VERSION=1.0.1
 WORKDIR /app
 COPY --from=build /build/target/lms-notification-service-*.jar /app/
 
-EXPOSE 8053
+EXPOSE 8054
 ENV DB_URL=jdbc:postgresql://pdb:5432/lms
 ENV ACTIVE_PROFILE=${PROFILE}
 ENV JAR_VERSION=${APP_VERSION}
