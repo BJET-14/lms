@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.bjet.aki</groupId>
 	<artifactId>lms-notification-service</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.2</version>
 	<name>lms-notification-service</name>
 	<description>lms-notification-service</description>
 	<properties>
@@ -63,6 +63,22 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.45.0</version>
+				<configuration>
+					<authConfig>
+						<username>akilms</username>
+						<password>bjet@aki2024</password>
+					</authConfig>
+					<images>
+						<image>
+							<name>akilms/${project.name}:${project.version}</name>
+						</image>
+					</images>
 				</configuration>
 			</plugin>
 		</plugins>
