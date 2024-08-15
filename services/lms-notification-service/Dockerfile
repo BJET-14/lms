@@ -12,15 +12,14 @@ FROM amazoncorretto:17
 
 # Arguments
 ARG PROFILE=dev
-ARG APP_VERSION=1.0.1
+ARG APP_VERSION=1.0.3
 
 WORKDIR /app
 COPY --from=build /build/target/lms-notification-service-*.jar /app/
 
 EXPOSE 8054
-ENV DB_URL=jdbc:postgresql://pdb:5432/lms
 ENV ACTIVE_PROFILE=${PROFILE}
 ENV JAR_VERSION=${APP_VERSION}
 
 
-CMD java -jar -Dspring.profiles.active=${ACTIVE_PROFILE} -Dspring.datasource.url=${DB_URL} lms-notification-service-${JAR_VERSION}.jar
+CMD java -jar -Dspring.profiles.active=${ACTIVE_PROFILE} lms-notification-service-${JAR_VERSION}.jar

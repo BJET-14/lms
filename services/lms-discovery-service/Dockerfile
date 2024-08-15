@@ -12,7 +12,7 @@ FROM amazoncorretto:17
 
 # Arguments
 ARG PROFILE=docker
-ARG APP_VERSION=1.0.1
+ARG APP_VERSION=1.0.8
 
 WORKDIR /app
 COPY --from=build /build/target/lms-discovery-service-*.jar /app/
