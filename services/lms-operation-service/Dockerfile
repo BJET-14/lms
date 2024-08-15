@@ -18,9 +18,8 @@ WORKDIR /app
 COPY --from=build /build/target/lms-operation-service-*.jar /app/
 
 EXPOSE 8051
-ENV DB_URL=jdbc:postgresql://pdb:5432/lms
 ENV ACTIVE_PROFILE=${PROFILE}
 ENV JAR_VERSION=${APP_VERSION}
 
 
-CMD java -jar -Dspring.profiles.active=${ACTIVE_PROFILE} -Dspring.datasource.url=${DB_URL} lms-operation-service-${JAR_VERSION}.jar
+CMD java -jar -Dspring.profiles.active=${ACTIVE_PROFILE} lms-operation-service-${JAR_VERSION}.jar
