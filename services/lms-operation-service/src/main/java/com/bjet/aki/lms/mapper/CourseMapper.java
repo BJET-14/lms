@@ -42,7 +42,9 @@ public class CourseMapper {
                 .setModules(entity.getModules()
                         .stream()
                         .map(moduleEntity -> moduleEntityToDomain().map(moduleEntity))
-                        .toList());
+                        .toList())
+                .setTeacherId(entity.getTeacherId())
+                .setClassMeetingLink(entity.getClassMeetingLink());
     }
 
     public ResultMapper<Module, ModuleEntity> moduleDomainToEntity() {

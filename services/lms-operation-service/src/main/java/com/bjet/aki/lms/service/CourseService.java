@@ -4,7 +4,11 @@ import com.bjet.aki.lms.asset.ListResultBuilder;
 import com.bjet.aki.lms.asset.PagedResult;
 import com.bjet.aki.lms.asset.PagedResultBuilder;
 import com.bjet.aki.lms.asset.ResultBuilder;
-import com.bjet.aki.lms.model.Course;
+import com.bjet.aki.lms.exception.CommonException;
+import com.bjet.aki.lms.jpa.CourseScheduleEntity;
+import com.bjet.aki.lms.jpa.CourseScheduleRepository;
+import com.bjet.aki.lms.mapper.CourseScheduleMapper;
+import com.bjet.aki.lms.model.*;
 import com.bjet.aki.lms.jpa.CourseEntity;
 import com.bjet.aki.lms.jpa.ModuleEntity;
 import com.bjet.aki.lms.mapper.CourseMapper;
@@ -31,6 +35,9 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final ModuleRepository moduleRepository;
     private final CourseMapper courseMapper;
+    private final UserService userService;
+    private final CourseScheduleMapper courseScheduleMapper;
+    private final CourseScheduleRepository courseScheduleRepository;
 
     public void saveCourse(Course course) {
         logger.info("Saving request for course");
@@ -72,5 +79,35 @@ public class CourseService {
 
     public void deleteModule(Long moduleId) {
         moduleRepository.deleteById(moduleId);
+    }
+
+    public void assignTeacherToCourse(Long courseId, TeacherAssigningToCourseRequest request) {
+        logger.info("Assigning teacher to course. CourseId {}", courseId);
+        CourseEntity entity = courseRepository.findById(courseId).orElseThrow(() -> new CommonException("03", "Could not find course"));
+        Teacher teacher = userService.findTeacher(request.getTeacherId());
+        if(teacher == null) {
+            throw new CommonException("02", "Could not find teacher");
+        }
+        entity.setTeacherId(request.getTeacherId());
+        courseRepository.save(entity);
+    }
+
+    public void schedule(Long courseId, CourseScheduleRequest request) {
+        logger.info("Scheduling the course. CourseId {}", courseId);
+        CourseEntity course = courseRepository.findById(courseId).orElseThrow(() -> new CommonException("03", "Could not find course"));
+        List<CourseSchedule> schedules = request.getSchedules();
+        List<CourseScheduleEntity> scheduleEntities = schedules.stream()
+                .map(schedule -> {
+                    CourseScheduleEntity entity = courseScheduleMapper.toEntity().map(schedule);
+                    entity.setCourse(course);
+                    return entity;
+                })
+                .toList();
+        courseScheduleRepository.saveAll(scheduleEntities);
+    }
+
+    public List<CourseSchedule> getSchedule(Long courseId) {
+        List<CourseScheduleEntity> schedules = courseScheduleRepository.findAllByCourse_Id(courseId);
+        return schedules.stream().map(entity -> courseScheduleMapper.toDomain().map(entity)).toList();
     }
 }

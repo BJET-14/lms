@@ -11,5 +11,6 @@ import java.util.List;
 @Accessors(chain = true)
 public class Teacher extends User{
     private List<AcademicQualification> academicQualifications;
+    private List<ProfessionalExperience> professionalExperiences;
     private Double yearsOfExperience;
 }

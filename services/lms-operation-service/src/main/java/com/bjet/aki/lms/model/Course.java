@@ -18,4 +18,7 @@ public class Course {
     private LocalDate endDate;
     private boolean isComplete;
     private List<Module> modules;
+    private List<WeeklyDays> days;
+    private String classMeetingLink;
+    private Long teacherId;
 }

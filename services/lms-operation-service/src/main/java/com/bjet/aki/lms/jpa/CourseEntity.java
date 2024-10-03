@@ -29,4 +29,6 @@ public class CourseEntity extends BaseEntity {
     private Boolean isComplete = Boolean.FALSE;
     @OneToMany(mappedBy = "course")
     private List<ModuleEntity> modules;
+    private String classMeetingLink;
+    private Long teacherId;
 }

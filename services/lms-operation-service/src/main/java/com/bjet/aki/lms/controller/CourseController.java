@@ -1,7 +1,7 @@
 package com.bjet.aki.lms.controller;
 
 import com.bjet.aki.lms.asset.PagedResult;
-import com.bjet.aki.lms.model.Course;
+import com.bjet.aki.lms.model.*;
 import com.bjet.aki.lms.service.CourseService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -55,6 +55,7 @@ public class CourseController {
         }
         return ResponseEntity.notFound().build();
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<Course> findCourseById(@PathVariable Long id) {
         return ResponseEntity.ok(courseService.findCourseById(id));
@@ -69,5 +70,29 @@ public class CourseController {
             return ResponseEntity.accepted().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping(path = "/{courseId}/assign")
+    public ResponseEntity<Void> assignTeacherToCourse(@PathVariable("courseId") Long courseId, @RequestBody TeacherAssigningToCourseRequest request){
+        if(!courseService.isExist(courseId)){
+            return ResponseEntity.notFound().build();
+        }
+        courseService.assignTeacherToCourse(courseId, request);
+        return ResponseEntity.accepted().build();
+    }
+
+    @PostMapping(path = "{courseId}/schedule")
+    public ResponseEntity<Void> scheduleCourse(@PathVariable Long courseId, @RequestBody CourseScheduleRequest request){
+        if(!courseService.isExist(courseId)){
+            return ResponseEntity.notFound().build();
+        }
+        courseService.schedule(courseId, request);
+        return ResponseEntity.accepted().build();
+    }
+
+    @GetMapping(path = "{courseId}/schedule")
+    public ResponseEntity<List<CourseSchedule>> getCourseSchedule(@PathVariable Long courseId){
+        List<CourseSchedule> schedule = courseService.getSchedule(courseId);
+        return ResponseEntity.ok().body(schedule);
     }
 }

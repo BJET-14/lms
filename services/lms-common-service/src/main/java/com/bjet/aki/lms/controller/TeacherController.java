@@ -28,8 +28,7 @@ public class TeacherController {
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(name = "firstName", required = false) String firstName,
             @RequestParam(name = "lastName", required = false) String lastName,
-            @RequestParam(name = "email", required = false) String email
-    ){
+            @RequestParam(name = "email", required = false) String email){
         if(asPage){
             Pageable pageable = PageRequest.of(page, size);
             PagedResult<Teacher> teacherAsPage = teacherService.findAllTeachers(pageable, firstName, lastName, email);
@@ -39,11 +38,19 @@ public class TeacherController {
         return ResponseEntity.ok(teacherAsList);
     }
 
+    @GetMapping("/{teacherId}")
+    public ResponseEntity<?> findTeacherById(@PathVariable Long teacherId){
+        if(!teacherService.isExist(teacherId)){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(teacherService.getTeacher(teacherId));
+    }
+
     @PutMapping(path = "/{teacherId}/update")
     public ResponseEntity<Void> updateTeacher(@PathVariable("teacherId") Long teacherId,
                                               @RequestBody Teacher teacher){
         if(teacherService.isExist(teacherId)){
-            teacherService.update(teacher);
+            teacherService.update(teacherId, teacher);
             return ResponseEntity.accepted().build();
         }
         return ResponseEntity.notFound().build();
