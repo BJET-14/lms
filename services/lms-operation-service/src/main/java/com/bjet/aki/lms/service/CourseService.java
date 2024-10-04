@@ -15,6 +15,7 @@ import com.bjet.aki.lms.mapper.CourseMapper;
 import com.bjet.aki.lms.repository.CourseRepository;
 import com.bjet.aki.lms.repository.ModuleRepository;
 import com.bjet.aki.lms.specification.CourseSpecification;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -39,6 +40,7 @@ public class CourseService {
     private final CourseScheduleMapper courseScheduleMapper;
     private final CourseScheduleRepository courseScheduleRepository;
 
+    @Transactional
     public void saveCourse(Course course) {
         logger.info("Saving request for course");
         CourseEntity courseEntity = courseMapper.toEntity().map(course);
@@ -71,6 +73,7 @@ public class CourseService {
 
     public void updateCourse(Course course) {
         CourseEntity courseEntity = courseMapper.toEntity().map(course);
+        courseRepository.save(courseEntity);
     }
 
     public boolean isExist(long id) {
@@ -81,6 +84,7 @@ public class CourseService {
         moduleRepository.deleteById(moduleId);
     }
 
+    @Transactional
     public void assignTeacherToCourse(Long courseId, TeacherAssigningToCourseRequest request) {
         logger.info("Assigning teacher to course. CourseId {}", courseId);
         CourseEntity entity = courseRepository.findById(courseId).orElseThrow(() -> new CommonException("03", "Could not find course"));
@@ -92,6 +96,7 @@ public class CourseService {
         courseRepository.save(entity);
     }
 
+    @Transactional
     public void schedule(Long courseId, CourseScheduleRequest request) {
         logger.info("Scheduling the course. CourseId {}", courseId);
         CourseEntity course = courseRepository.findById(courseId).orElseThrow(() -> new CommonException("03", "Could not find course"));

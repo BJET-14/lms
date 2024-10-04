@@ -19,6 +19,9 @@ public class AcademicQualificationEntity {
             sequenceName = "SEQ_ACAD_QUALIFICATION")
     private long id;
     private String name;
+    private Integer passingYear;
+    private Double result;
+    private String boardOrInstitute;
 
     @ManyToOne
     @JoinColumn(name = "teacher_id")

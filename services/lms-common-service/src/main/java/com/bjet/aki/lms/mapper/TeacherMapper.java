@@ -46,13 +46,19 @@ public class TeacherMapper {
                 .findById(domain.getId())
                 .orElseGet(AcademicQualificationEntity::new)
                 .setId(domain.getId())
-                .setName(domain.getName());
+                .setName(domain.getName())
+                .setPassingYear(domain.getPassingYear())
+                .setBoardOrInstitute(domain.getBoardOrInstitute())
+                .setResult(domain.getResult());
     }
 
     public ResultMapper<AcademicQualificationEntity, AcademicQualification> academicQualificationEntityToDomain(){
         return domain -> new AcademicQualification()
                 .setId(domain.getId())
-                .setName(domain.getName());
+                .setName(domain.getName())
+                .setPassingYear(domain.getPassingYear())
+                .setBoardOrInstitute(domain.getBoardOrInstitute())
+                .setResult(domain.getResult());
     }
 
     public ResultMapper<ProfessionalExperience, ProfessionalExperienceEntity> professionalExperienceDomainToEntity(){

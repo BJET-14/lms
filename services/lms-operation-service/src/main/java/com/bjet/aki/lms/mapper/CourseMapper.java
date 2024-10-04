@@ -1,6 +1,7 @@
 package com.bjet.aki.lms.mapper;
 
 import com.bjet.aki.lms.asset.ResultMapper;
+import com.bjet.aki.lms.jpa.CourseScheduleRepository;
 import com.bjet.aki.lms.model.Course;
 import com.bjet.aki.lms.jpa.CourseEntity;
 import com.bjet.aki.lms.jpa.ModuleEntity;
@@ -16,6 +17,8 @@ public class CourseMapper {
 
     private final CourseRepository courseRepository;
     private final ModuleRepository moduleRepository;
+    private final CourseScheduleRepository courseScheduleRepository;
+    private final CourseScheduleMapper courseScheduleMapper;
 
     public ResultMapper<Course, CourseEntity> toEntity() {
         return domain -> courseRepository.findById(domain.getId())
@@ -24,7 +27,6 @@ public class CourseMapper {
                 .setDescription(domain.getDescription())
                 .setStartDate(domain.getStartDate())
                 .setEndDate(domain.getEndDate())
-                .setIsComplete(domain.isComplete())
                 .setModules(domain.getModules()
                         .stream()
                         .map(module -> moduleDomainToEntity().map(module))
@@ -38,7 +40,6 @@ public class CourseMapper {
                 .setDescription(entity.getDescription())
                 .setStartDate(entity.getStartDate())
                 .setEndDate(entity.getEndDate())
-                .setComplete(entity.getIsComplete())
                 .setModules(entity.getModules()
                         .stream()
                         .map(moduleEntity -> moduleEntityToDomain().map(moduleEntity))

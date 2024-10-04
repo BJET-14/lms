@@ -23,6 +23,8 @@ public class CourseEntity extends BaseEntity {
             sequenceName = "SEQ_COURSE")
     private long id;
     private String title;
+    @Lob
+    @Column
     private String description;
     private LocalDate startDate;
     private LocalDate endDate;

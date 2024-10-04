@@ -9,16 +9,18 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 @Entity
-@Table(name = "MODULES")
+@Table(name = "COuRSE_MODULES")
 public class ModuleEntity extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_MODULE")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_COURSE_MODULE")
     @SequenceGenerator(
-            name = "SEQ_MODULE",
+            name = "SEQ_COURSE_MODULE",
             allocationSize = 1,
-            sequenceName = "SEQ_MODULE")
+            sequenceName = "SEQ_COURSE_MODULE")
     private long id;
     private String title;
+    @Lob
+    @Column
     private String description;
     @ManyToOne
     @JoinColumn(name = "course_id")
