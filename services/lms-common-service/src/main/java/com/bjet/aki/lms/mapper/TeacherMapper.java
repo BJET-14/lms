@@ -70,6 +70,10 @@ public class TeacherMapper {
     public ResultMapper<ProfessionalExperienceEntity, ProfessionalExperience> professionalExperienceEntityToDomain(){
         return domain -> new ProfessionalExperience()
                 .setId(domain.getId())
-                .setName(domain.getName());
+                .setName(domain.getName())
+                .setDesignation(domain.getDesignation())
+                .setInstitute(domain.getInstitute())
+                .setStartTime(domain.getStartTime())
+                .setEndTime(domain.getEndTime());
     }
 }
