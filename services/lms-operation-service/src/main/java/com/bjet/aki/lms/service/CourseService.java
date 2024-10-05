@@ -56,16 +56,19 @@ public class CourseService {
         }
     }
 
+    @Transactional
     public List<Course> findAllCourses(String title, LocalDate startDateFrom, LocalDate startDateTo, Boolean isComplete) {
         List<CourseEntity> courses = courseRepository.findAll(CourseSpecification.findCourses(title, startDateFrom, startDateTo, isComplete));
         return ListResultBuilder.build(courses, courseMapper.toDomain());
     }
 
+    @Transactional
     public PagedResult<Course> findAllCourses(Pageable pageable, String title, LocalDate startDateFrom, LocalDate startDateTo, Boolean isComplete) {
         Page<CourseEntity> courses = courseRepository.findAll(CourseSpecification.findCourses(title, startDateFrom, startDateTo, isComplete), pageable);
         return PagedResultBuilder.build(courses, courseMapper.toDomain());
     }
 
+    @Transactional
     public Course findCourseById(Long id) {
         CourseEntity courseEntity = courseRepository.findById(id).orElseThrow(() -> new NotFoundException("Could not find course with id: " + id));
         return ResultBuilder.build(courseEntity, courseMapper.toDomain());

@@ -25,6 +25,7 @@ public class CourseEntity extends BaseEntity {
     private String title;
     @Lob
     @Column
+    @Basic(fetch = FetchType.EAGER)
     private String description;
     private LocalDate startDate;
     private LocalDate endDate;

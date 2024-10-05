@@ -20,6 +20,7 @@ public class ModuleEntity extends BaseEntity {
     private long id;
     private String title;
     @Lob
+    @Basic(fetch = FetchType.EAGER)
     @Column
     private String description;
     @ManyToOne
