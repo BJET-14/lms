@@ -5,13 +5,11 @@ import com.bjet.aki.lms.asset.PagedResult;
 import com.bjet.aki.lms.asset.PagedResultBuilder;
 import com.bjet.aki.lms.asset.ResultBuilder;
 import com.bjet.aki.lms.exception.CommonException;
-import com.bjet.aki.lms.jpa.CourseScheduleEntity;
-import com.bjet.aki.lms.jpa.CourseScheduleRepository;
+import com.bjet.aki.lms.jpa.*;
 import com.bjet.aki.lms.mapper.CourseScheduleMapper;
 import com.bjet.aki.lms.model.*;
-import com.bjet.aki.lms.jpa.CourseEntity;
-import com.bjet.aki.lms.jpa.ModuleEntity;
 import com.bjet.aki.lms.mapper.CourseMapper;
+import com.bjet.aki.lms.repository.ClassScheduleRepository;
 import com.bjet.aki.lms.repository.CourseRepository;
 import com.bjet.aki.lms.repository.ModuleRepository;
 import com.bjet.aki.lms.specification.CourseSpecification;
@@ -24,7 +22,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -39,6 +41,7 @@ public class CourseService {
     private final UserService userService;
     private final CourseScheduleMapper courseScheduleMapper;
     private final CourseScheduleRepository courseScheduleRepository;
+    private final ClassScheduleRepository classScheduleRepository;
 
     @Transactional
     public void saveCourse(Course course) {
@@ -91,12 +94,17 @@ public class CourseService {
     public void assignTeacherToCourse(Long courseId, TeacherAssigningToCourseRequest request) {
         logger.info("Assigning teacher to course. CourseId {}", courseId);
         CourseEntity entity = courseRepository.findById(courseId).orElseThrow(() -> new CommonException("03", "Could not find course"));
+        if(courseScheduleRepository.findAllByCourse_Id(courseId).size() == 0){
+            throw new CommonException("04", "Course schedule not added yet");
+        }
         Teacher teacher = userService.findTeacher(request.getTeacherId());
         if(teacher == null) {
             throw new CommonException("02", "Could not find teacher");
         }
         entity.setTeacherId(request.getTeacherId());
         courseRepository.save(entity);
+
+        // todo send email to teacher with the schedule
     }
 
     @Transactional
@@ -111,11 +119,45 @@ public class CourseService {
                     return entity;
                 })
                 .toList();
-        courseScheduleRepository.saveAll(scheduleEntities);
+        courseScheduleRepository.saveAllAndFlush(scheduleEntities);
+        List<ClassScheduleEntity> classSchedule = generateClassSchedule(course);
+        classScheduleRepository.saveAll(classSchedule);
     }
 
-    public List<CourseSchedule> getSchedule(Long courseId) {
-        List<CourseScheduleEntity> schedules = courseScheduleRepository.findAllByCourse_Id(courseId);
-        return schedules.stream().map(entity -> courseScheduleMapper.toDomain().map(entity)).toList();
+    @Transactional
+    public List<ClassSchedule> getClassSchedule(Long courseId) {
+        List<ClassScheduleEntity> classScheduleEntities = classScheduleRepository.findAllByCourse_Id(courseId);
+        return classScheduleEntities.stream()
+                .map(entity -> new ClassSchedule()
+                        .setId(entity.getId())
+                        .setDate(entity.getClassDateTime().toLocalDate())
+                        .setTime(entity.getClassDateTime().toLocalTime())
+                        .setTimeSlot(entity.getTimeSlot()))
+                .toList();
+    }
+
+    public List<ClassScheduleEntity> generateClassSchedule(CourseEntity course){
+        List<CourseScheduleEntity> schedules = courseScheduleRepository.findAllByCourse_Id(course.getId());
+        if(course.getStartDate() != null){
+            List<ClassScheduleEntity> classScheduleEntities = new ArrayList<>();
+            LocalDate currentDate = course.getStartDate();
+            int totalClasses = course.getModules().size();
+            int classCount = 0;
+            while (classCount < totalClasses) {
+                DayOfWeek dayOfWeek = currentDate.getDayOfWeek();
+                for(CourseScheduleEntity courseSchedule : schedules){
+                    if(courseSchedule.getDays().equals(dayOfWeek)){
+                        LocalTime time = courseSchedule.getTimeSlot().equals(TimeSlot.AM_9) ? LocalTime.of(9, 0) : LocalTime.of(11, 0);
+                        classScheduleEntities.add(new ClassScheduleEntity(0L, course, LocalDateTime.of(currentDate, time), courseSchedule.getTimeSlot()));
+                        classCount++;
+                    }
+                }
+                currentDate = currentDate.plusDays(1);
+            }
+            return classScheduleEntities;
+        } else{
+            logger.warn("Course start date is not set");
+        }
+        return null;
     }
 }

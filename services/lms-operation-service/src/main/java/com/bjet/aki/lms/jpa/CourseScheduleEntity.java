@@ -1,11 +1,12 @@
 package com.bjet.aki.lms.jpa;
 
 import com.bjet.aki.lms.model.TimeSlot;
-import com.bjet.aki.lms.model.WeeklyDays;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.time.DayOfWeek;
 
 @Getter
 @Setter
@@ -27,7 +28,7 @@ public class CourseScheduleEntity extends BaseEntity {
     private CourseEntity course;
 
     @Enumerated(EnumType.STRING)
-    private WeeklyDays days;
+    private DayOfWeek days;
 
     private TimeSlot timeSlot;
 }
