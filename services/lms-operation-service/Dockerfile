@@ -12,7 +12,7 @@ FROM amazoncorretto:17
 
 # Arguments
 ARG PROFILE=dev
-ARG APP_VERSION=1.0.8
+ARG APP_VERSION=1.0.9
 
 WORKDIR /app
 COPY --from=build /build/target/lms-operation-service-*.jar /app/
