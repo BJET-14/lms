@@ -90,9 +90,9 @@ public class CourseController {
         return ResponseEntity.accepted().build();
     }
 
-    @GetMapping(path = "{courseId}/schedule")
-    public ResponseEntity<List<CourseSchedule>> getCourseSchedule(@PathVariable Long courseId){
-        List<CourseSchedule> schedule = courseService.getSchedule(courseId);
+    @GetMapping(path = "{courseId}/class-schedule")
+    public ResponseEntity<List<ClassSchedule>> getCourseSchedule(@PathVariable Long courseId){
+        List<ClassSchedule> schedule = courseService.getClassSchedule(courseId);
         return ResponseEntity.ok().body(schedule);
     }
 }

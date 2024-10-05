@@ -4,13 +4,15 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Getter
 @Setter
 @Accessors(chain = true)
-public class CourseSchedule {
-    private long id;
-    private DayOfWeek days;
+public class ClassSchedule {
+    private  long id;
+    private LocalDate date;
+    private LocalTime time;
     private TimeSlot timeSlot;
 }
