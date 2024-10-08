@@ -1,5 +1,6 @@
 package com.bjet.aki.lms.consumer;
 
+import com.bjet.aki.lms.model.ClassScheduleSentToEmailRequest;
 import com.bjet.aki.lms.model.RegistrationSuccessNotificationRequest;
 import com.bjet.aki.lms.service.EmailService;
 import jakarta.mail.MessagingException;
@@ -18,9 +19,16 @@ public class EmailNotificationConsumer {
     private final EmailService emailService;
 
     @KafkaListener(topics = "registration-success-topic")
-    public void consumePaymentSuccessNotifications(RegistrationSuccessNotificationRequest registrationSuccessNotificationRequest) throws MessagingException {
-        log.info(format("Consuming the message from registration-success-topic Topic. Email= %s", registrationSuccessNotificationRequest.getEmail()));
+    public void registrationSuccessNotifications(RegistrationSuccessNotificationRequest registrationSuccessNotificationRequest) throws MessagingException {
+        log.info(format("Consuming the message from registration-success-topic Topic. Receiver= %s", registrationSuccessNotificationRequest.getEmail()));
         emailService.sendEmail(registrationSuccessNotificationRequest);
+    }
+
+    @KafkaListener(topics = "class-schedule-teacher-topic")
+    public void classScheduleToTeacherNotifications(ClassScheduleSentToEmailRequest classScheduleSentToEmailRequest) throws MessagingException {
+        log.info(format("Consuming the message from class-schedule-teacher-topic Topic. Receiver= %s", classScheduleSentToEmailRequest.getReceiverEmailAddress()));
+        classScheduleSentToEmailRequest.setSubject("Class schedule for " + classScheduleSentToEmailRequest.getCourseTitle());
+        emailService.sendEmail(classScheduleSentToEmailRequest);
     }
 
 }

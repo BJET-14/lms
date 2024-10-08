@@ -11,3 +11,5 @@ spring:
     password: ${DB_PASSWORD:root123}
   kafka:
     bootstrap-servers: kafka:9092
+    producer:
+      bootstrap-servers: kafka:9092

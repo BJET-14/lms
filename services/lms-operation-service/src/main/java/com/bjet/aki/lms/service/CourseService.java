@@ -42,6 +42,7 @@ public class CourseService {
     private final CourseScheduleMapper courseScheduleMapper;
     private final CourseScheduleRepository courseScheduleRepository;
     private final ClassScheduleRepository classScheduleRepository;
+    private final EmailNotificationService notificationService;
 
     @Transactional
     public void saveCourse(Course course) {
@@ -94,7 +95,7 @@ public class CourseService {
     public void assignTeacherToCourse(Long courseId, TeacherAssigningToCourseRequest request) {
         logger.info("Assigning teacher to course. CourseId {}", courseId);
         CourseEntity entity = courseRepository.findById(courseId).orElseThrow(() -> new CommonException("03", "Could not find course"));
-        if(courseScheduleRepository.findAllByCourse_Id(courseId).size() == 0){
+        if(courseScheduleRepository.findAllByCourse_Id(courseId).isEmpty()){
             throw new CommonException("04", "Course schedule not added yet");
         }
         Teacher teacher = userService.findTeacher(request.getTeacherId());
@@ -104,7 +105,14 @@ public class CourseService {
         entity.setTeacherId(request.getTeacherId());
         courseRepository.save(entity);
 
-        // todo send email to teacher with the schedule
+        sendEmailNotificationToTeacherWithSchedule(entity, teacher);
+    }
+
+    private void sendEmailNotificationToTeacherWithSchedule(CourseEntity course, Teacher teacher) {
+        logger.info("Sending course schedule to teacher. Email: {}", teacher.getEmail());
+        List<ClassScheduleEntity> classSchedules = classScheduleRepository.findAllByCourse_Id(course.getId());
+        ClassScheduleSentToEmailRequest request = courseMapper.toEmailNotificationToTeacherWithClassSchedule(teacher, course, classSchedules);
+        notificationService.sendEmailWithClassScheduleToTeacher(request);
     }
 
     @Transactional
@@ -154,6 +162,7 @@ public class CourseService {
                 }
                 currentDate = currentDate.plusDays(1);
             }
+            classScheduleEntities.sort((o1, o2) -> o1.getClassDateTime().isEqual(o2.getClassDateTime()) ? 0 : o1.getClassDateTime().isAfter(o2.getClassDateTime()) ? 1 : -1);
             return classScheduleEntities;
         } else{
             logger.warn("Course start date is not set");

@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class CourseServiceTest {
 
     @BeforeEach
     void before(){
-        courseEntity = new CourseEntity().setId(1L).setTitle("Course 1").setDescription("Course 1").setStartDate(LocalDate.of(2024, 8, 10));
+        courseEntity = new CourseEntity().setId(1L).setTitle("Course 1").setDescription("Course 1").setStartDate(LocalDate.of(2024, 12, 1));
         List<ModuleEntity> moduleEntityList = new ArrayList<>();
         moduleEntityList.add(new ModuleEntity().setId(1L).setCourse(courseEntity).setTitle("Module 1").setDescription("Module 1"));
         moduleEntityList.add(new ModuleEntity().setId(2L).setCourse(courseEntity).setTitle("Module 2").setDescription("Module 2"));
@@ -57,5 +58,11 @@ public class CourseServiceTest {
     void checkClassSchedule() {
         List<ClassScheduleEntity> classSchedule = courseService.generateClassSchedule(courseEntity);
         assertThat(classSchedule.size()).isEqualTo(10);
+        assertThat(classSchedule.get(0).getClassDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 1, 9, 0));
+        assertThat(classSchedule.get(0).getTimeSlot()).isEqualTo(TimeSlot.AM_9);
+        assertThat(classSchedule.get(4).getClassDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 10, 11, 0));
+        assertThat(classSchedule.get(4).getTimeSlot()).isEqualTo(TimeSlot.AM_11);
+        assertThat(classSchedule.get(9).getClassDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 22, 9, 0));
+        assertThat(classSchedule.get(9).getTimeSlot()).isEqualTo(TimeSlot.AM_9);
     }
 }

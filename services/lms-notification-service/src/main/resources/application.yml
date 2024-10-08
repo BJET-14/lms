@@ -19,7 +19,7 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: '*'
-        spring.json.type.mapping: registrationSuccessNotificationRequest:com.bjet.aki.lms.model.RegistrationSuccessNotificationRequest
+        spring.json.type.mapping: registrationSuccessNotificationRequest:com.bjet.aki.lms.model.RegistrationSuccessNotificationRequest, classScheduleSentToEmailRequest:com.bjet.aki.lms.model.ClassScheduleSentToEmailRequest
       bootstrap-servers: localhost:9092
   mail:
     host: smtp.gmail.com

@@ -1,5 +1,6 @@
 package com.bjet.aki.lms.service;
 
+import com.bjet.aki.lms.model.DetailClassSchedule;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,6 +8,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
+
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,5 +32,15 @@ public class EmailTemplateService {
         context.setVariable("password", password);
         context.setVariable("redirectUrl", deploymentHost);
         return templateEngine.process("user-welcome-email-signup.html", context);
+    }
+
+    public String getClassScheduleEmailTemplate(String receiverName, String courseTitle, String teacherName, List<DetailClassSchedule> schedules){
+        logger.info("Generating a class scheduler email for Teacher.Name={}", receiverName);
+        Context context = new Context();
+        context.setVariable("receiverName", receiverName);
+        context.setVariable("courseTitle", courseTitle);
+        context.setVariable("teacherName", teacherName);
+        context.setVariable("schedules", schedules);
+        return templateEngine.process("class-schedule-email.html", context);
     }
 }
