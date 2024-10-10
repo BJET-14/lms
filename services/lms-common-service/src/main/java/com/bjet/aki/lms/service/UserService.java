@@ -4,6 +4,9 @@ import com.bjet.aki.lms.asset.ListResultBuilder;
 import com.bjet.aki.lms.asset.PagedResult;
 import com.bjet.aki.lms.asset.PagedResultBuilder;
 import com.bjet.aki.lms.exceptions.CommonException;
+import com.bjet.aki.lms.jpa.AdminEntity;
+import com.bjet.aki.lms.jpa.StudentEntity;
+import com.bjet.aki.lms.jpa.TeacherEntity;
 import com.bjet.aki.lms.model.Role;
 import com.bjet.aki.lms.model.User;
 import com.bjet.aki.lms.model.UserSaveRequest;
@@ -34,27 +37,32 @@ public class UserService {
     private final TeacherRepository teacherRepository;
     private final EmailNotificationService notificationService;
 
-    public void saveUser(UserSaveRequest user){
+    public Long saveUser(UserSaveRequest user){
         logger.info("Request to save user. email={}", user.getEmail());
         switch (user.getRole()){
             case ADMIN -> {
                 var adminUser = userMapper.toAdminEntity().map(user);
                 adminUser.setPasswordResetRequired(true);
-                adminRepository.save(adminUser);
+                AdminEntity admin = adminRepository.save(adminUser);
+                notificationService.sendEmailNotificationForRegistration(userMapper.toNotificationRequest().map(user));
+                return admin.getId();
             }
             case TEACHER ->{
                 var teacherUser = userMapper.toTeacherEntity().map(user);
                 teacherUser.setPasswordResetRequired(true);
-                teacherRepository.save(teacherUser);
+                TeacherEntity teacher = teacherRepository.save(teacherUser);
+                notificationService.sendEmailNotificationForRegistration(userMapper.toNotificationRequest().map(user));
+                return teacher.getId();
             }
             case STUDENT ->{
                 var studentUser = userMapper.toStudentEntity().map(user);
                 studentUser.setPasswordResetRequired(true);
-                studentRepository.save(studentUser);
+                StudentEntity student = studentRepository.save(studentUser);
+                notificationService.sendEmailNotificationForRegistration(userMapper.toNotificationRequest().map(user));
+                return student.getId();
             }
             default -> throw new IllegalStateException("Unexpected value: " + user.getRole());
         }
-        notificationService.sendEmailNotificationForRegistration(userMapper.toNotificationRequest().map(user));
     }
 
     public User findByEmail(String email) {

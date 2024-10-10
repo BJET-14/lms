@@ -48,9 +48,9 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> registerUser(@RequestBody UserSaveRequest request){
-        userService.saveUser(request);
-        return ResponseEntity.accepted().build();
+    public ResponseEntity<Long> registerUser(@RequestBody UserSaveRequest request){
+        Long id = userService.saveUser(request);
+        return ResponseEntity.ok(id);
     }
 
     @GetMapping(path = "/email")

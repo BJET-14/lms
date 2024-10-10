@@ -9,10 +9,7 @@ import com.bjet.aki.lms.jpa.*;
 import com.bjet.aki.lms.mapper.CourseScheduleMapper;
 import com.bjet.aki.lms.model.*;
 import com.bjet.aki.lms.mapper.CourseMapper;
-import com.bjet.aki.lms.repository.ClassScheduleRepository;
-import com.bjet.aki.lms.repository.CourseRepository;
-import com.bjet.aki.lms.repository.CourseScheduleRepository;
-import com.bjet.aki.lms.repository.ModuleRepository;
+import com.bjet.aki.lms.repository.*;
 import com.bjet.aki.lms.specification.CourseSpecification;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
@@ -44,6 +41,7 @@ public class CourseService {
     private final CourseScheduleRepository courseScheduleRepository;
     private final ClassScheduleRepository classScheduleRepository;
     private final EmailNotificationService notificationService;
+    private final StudentEnrollmentRepository studentEnrollmentRepository;
 
     @Transactional
     public Long saveCourse(Course course) {
@@ -171,5 +169,41 @@ public class CourseService {
             logger.warn("Course start date is not set");
         }
         return null;
+    }
+
+    public Long enroll(Long courseId, StudentEnrollmentRequest request) {
+        StudentEnrollmentEntity entity = new StudentEnrollmentEntity();
+        entity.setCourseId(courseId);
+        entity.setStudentId(request.getStudentId());
+        entity.setEnrollmentDate(LocalDate.now());
+        entity = studentEnrollmentRepository.save(entity);
+        return entity.getId();
+    }
+
+    public List<StudentEnrollment> getAllEnrolledStudents(Long courseId) {
+        List<StudentEnrollmentEntity> enrollmentEntities = studentEnrollmentRepository.findAllByCourseId(courseId);
+        List<StudentEnrollment> studentEnrollments = enrollmentEntities.stream()
+                .map(entity -> {
+                    StudentEnrollment studentEnrollment = new StudentEnrollment();
+                    studentEnrollment.setStudentId(entity.getStudentId());
+                    Student student = userService.findStudent(entity.getStudentId());
+                    studentEnrollment.setStudentName(student.getFirstName() + " " + student.getLastName());
+                    studentEnrollment.setCourseId(entity.getCourseId());
+                    Course course = this.findCourseById(entity.getCourseId());
+                    studentEnrollment.setCourseName(course.getTitle());
+                    studentEnrollment.setEnrollmentDate(entity.getEnrollmentDate());
+                    return studentEnrollment;
+                })
+                .toList();
+        return studentEnrollments;
+    }
+
+    public List<Student> findStudentsByCourse(Long courseId) {
+        List<StudentEnrollmentEntity> enrollmentEntities = studentEnrollmentRepository.findAllByCourseId(courseId);
+        return enrollmentEntities.stream()
+                .map(entity -> {
+                    Student student = userService.findStudent(entity.getStudentId());
+                    return student;
+                }).toList();
     }
 }

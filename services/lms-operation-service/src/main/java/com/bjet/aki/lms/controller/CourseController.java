@@ -95,4 +95,22 @@ public class CourseController {
         List<ClassSchedule> schedule = courseService.getClassSchedule(courseId);
         return ResponseEntity.ok().body(schedule);
     }
+
+    @PostMapping(path = "{courseId}/enrollement")
+    public ResponseEntity<Long> enrollmentToCourse(@PathVariable Long courseId, @RequestBody StudentEnrollmentRequest request){
+        if(!courseService.isExist(courseId)){
+            return ResponseEntity.notFound().build();
+        }
+        Long id = courseService.enroll(courseId, request);
+        return ResponseEntity.ok(id);
+    }
+
+    @GetMapping(path = "{courseId}/enrollment")
+    public ResponseEntity<List<StudentEnrollment>> getEnrolledStudents(@PathVariable Long courseId){
+        if(!courseService.isExist(courseId)){
+            return ResponseEntity.notFound().build();
+        }
+        List<StudentEnrollment> studentEnrollments = courseService.getAllEnrolledStudents(courseId);
+        return ResponseEntity.ok().body(studentEnrollments);
+    }
 }
