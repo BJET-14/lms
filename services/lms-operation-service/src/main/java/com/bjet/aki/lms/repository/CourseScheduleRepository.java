@@ -1,5 +1,6 @@
-package com.bjet.aki.lms.jpa;
+package com.bjet.aki.lms.repository;
 
+import com.bjet.aki.lms.jpa.CourseScheduleEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

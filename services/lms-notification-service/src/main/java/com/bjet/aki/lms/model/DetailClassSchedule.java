@@ -15,6 +15,7 @@ import java.time.LocalTime;
 public class DetailClassSchedule {
     private  long id;
     private LocalDate date;
+    private String formattedDate;
     private LocalTime time;
     private String title;
 }

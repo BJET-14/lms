@@ -9,7 +9,7 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 @Entity
-@Table(name = "COuRSE_MODULES")
+@Table(name = "COURSE_MODULES")
 public class ModuleEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_COURSE_MODULE")

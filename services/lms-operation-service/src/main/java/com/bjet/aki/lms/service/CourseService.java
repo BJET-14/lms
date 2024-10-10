@@ -11,6 +11,7 @@ import com.bjet.aki.lms.model.*;
 import com.bjet.aki.lms.mapper.CourseMapper;
 import com.bjet.aki.lms.repository.ClassScheduleRepository;
 import com.bjet.aki.lms.repository.CourseRepository;
+import com.bjet.aki.lms.repository.CourseScheduleRepository;
 import com.bjet.aki.lms.repository.ModuleRepository;
 import com.bjet.aki.lms.specification.CourseSpecification;
 import jakarta.transaction.Transactional;
@@ -45,10 +46,10 @@ public class CourseService {
     private final EmailNotificationService notificationService;
 
     @Transactional
-    public void saveCourse(Course course) {
+    public Long saveCourse(Course course) {
         logger.info("Saving request for course");
         CourseEntity courseEntity = courseMapper.toEntity().map(course);
-        courseRepository.save(courseEntity);
+        courseEntity = courseRepository.save(courseEntity);
 
         // Save the modules associated with the course
         List<ModuleEntity> modules = courseEntity.getModules();
@@ -58,6 +59,8 @@ public class CourseService {
                 moduleRepository.save(module);
             }
         }
+
+        return courseEntity.getId();
     }
 
     @Transactional

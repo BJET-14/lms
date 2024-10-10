@@ -1,6 +1,7 @@
 package com.bjet.aki.lms.service;
 
 import com.bjet.aki.lms.model.ClassScheduleSentToEmailRequest;
+import com.bjet.aki.lms.model.DetailClassSchedule;
 import com.bjet.aki.lms.model.RegistrationSuccessNotificationRequest;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -10,6 +11,10 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -48,8 +53,12 @@ public class EmailService {
         helper.setFrom("bjet.aki.info@gmail.com");
         helper.setTo(request.getReceiverEmailAddress());
         helper.setSubject(request.getSubject());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        List<DetailClassSchedule> detailClassSchedules = request.getClassSchedules().stream()
+                .map(schedule -> schedule.setFormattedDate(formatter.format(schedule.getDate())))
+                .toList();
         try {
-            String htmlBody = templateService.getClassScheduleEmailTemplate(request.getReceiverName(), request.getCourseTitle(), request.getTeacherName(), request.getClassSchedules());
+            String htmlBody = templateService.getClassScheduleEmailTemplate(request.getReceiverName(), request.getCourseTitle(), request.getTeacherName(), detailClassSchedules);
             helper.setText(htmlBody, true);
             mailSender.send(message);
             log.info("Email sent.");

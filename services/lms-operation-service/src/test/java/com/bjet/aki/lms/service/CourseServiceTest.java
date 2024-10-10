@@ -2,6 +2,7 @@ package com.bjet.aki.lms.service;
 
 import com.bjet.aki.lms.jpa.*;
 import com.bjet.aki.lms.model.TimeSlot;
+import com.bjet.aki.lms.repository.CourseScheduleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

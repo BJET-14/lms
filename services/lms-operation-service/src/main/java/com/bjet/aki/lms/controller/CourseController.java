@@ -41,9 +41,9 @@ public class CourseController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> saveCourse(@RequestBody Course course) {
-        courseService.saveCourse(course);
-        return ResponseEntity.accepted().build();
+    public ResponseEntity<Long> saveCourse(@RequestBody Course course) {
+        Long id = courseService.saveCourse(course);
+        return ResponseEntity.ok(id);
     }
 
     @PutMapping(path = "/{courseId}")

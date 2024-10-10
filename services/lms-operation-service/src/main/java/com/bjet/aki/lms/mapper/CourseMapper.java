@@ -2,7 +2,7 @@ package com.bjet.aki.lms.mapper;
 
 import com.bjet.aki.lms.asset.ResultMapper;
 import com.bjet.aki.lms.jpa.ClassScheduleEntity;
-import com.bjet.aki.lms.jpa.CourseScheduleRepository;
+import com.bjet.aki.lms.repository.CourseScheduleRepository;
 import com.bjet.aki.lms.model.*;
 import com.bjet.aki.lms.jpa.CourseEntity;
 import com.bjet.aki.lms.jpa.ModuleEntity;

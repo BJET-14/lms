@@ -2,7 +2,7 @@ package com.bjet.aki.lms.mapper;
 
 import com.bjet.aki.lms.asset.ResultMapper;
 import com.bjet.aki.lms.jpa.CourseScheduleEntity;
-import com.bjet.aki.lms.jpa.CourseScheduleRepository;
+import com.bjet.aki.lms.repository.CourseScheduleRepository;
 import com.bjet.aki.lms.model.CourseSchedule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

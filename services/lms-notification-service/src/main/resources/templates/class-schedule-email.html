@@ -74,7 +74,7 @@
         <thead>
         <tr style="background-color: #4CAF50; color: white; text-align: left;">
             <th style="padding: 12px; border-bottom: 1px solid #ddd;">Serial</th>
-            <th style="padding: 12px; border-bottom: 1px solid #ddd;">Class Title</th>
+            <th style="padding: 12px; border-bottom: 1px solid #ddd;">Module Title</th>
             <th style="padding: 12px; border-bottom: 1px solid #ddd;">Date</th>
             <th style="padding: 12px; border-bottom: 1px solid #ddd;">Time</th>
         </tr>
@@ -83,7 +83,7 @@
         <tr style="background-color: #f9f9f9;" th:each="schedule, iterStat : ${schedules}">
             <td style="padding: 12px; border-bottom: 1px solid #ddd; text-align: center" th:text="${iterStat.index + 1}"></td>
             <td style="padding: 12px; border-bottom: 1px solid #ddd;" th:text="${schedule.title}"></td>
-            <td style="padding: 12px; border-bottom: 1px solid #ddd;" th:text="${schedule.date}"></td>
+            <td style="padding: 12px; border-bottom: 1px solid #ddd;" th:text="${schedule.formattedDate}"></td>
             <td style="padding: 12px; border-bottom: 1px solid #ddd;" th:text="${schedule.time + ' AM'}"></td>
         </tr>
         </tbody>

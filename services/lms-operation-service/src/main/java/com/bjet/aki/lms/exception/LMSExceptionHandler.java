@@ -24,6 +24,7 @@ public class LMSExceptionHandler {
     public @ResponseBody ErrorResponse handleException(Exception ex) {
         log.error("===================== LMS Exception =====================");
         log.error("Error occurred in operation service: {}", ex.getMessage());
+        ex.printStackTrace();
         return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Severe error occurred in operation service: Contact ADMIN");
     }
 }
