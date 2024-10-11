@@ -16,6 +16,7 @@ import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springdoc.core.converters.ModelConverterRegistrar;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CourseService {
 
+    private final ModelConverterRegistrar modelConverterRegistrar;
     Logger logger = LoggerFactory.getLogger(CourseService.class);
 
     private final CourseRepository courseRepository;
@@ -79,8 +81,13 @@ public class CourseService {
         return ResultBuilder.build(courseEntity, courseMapper.toDomain());
     }
 
+    @Transactional
     public void updateCourse(Course course) {
         CourseEntity courseEntity = courseMapper.toEntity().map(course);
+        List<ModuleEntity> modules = new ArrayList<>(courseEntity.getModules());
+        modules.clear();
+        modules.addAll(courseEntity.getModules().stream().map(module -> module.setCourse(courseEntity)).toList());
+        courseEntity.setModules(modules);
         courseRepository.save(courseEntity);
     }
 

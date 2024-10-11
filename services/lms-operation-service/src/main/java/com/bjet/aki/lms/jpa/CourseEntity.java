@@ -30,7 +30,7 @@ public class CourseEntity extends BaseEntity {
     private LocalDate startDate;
     private LocalDate endDate;
     private Boolean isComplete = Boolean.FALSE;
-    @OneToMany(mappedBy = "course")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "course")
     private List<ModuleEntity> modules;
     private String classMeetingLink;
     private Long teacherId;
