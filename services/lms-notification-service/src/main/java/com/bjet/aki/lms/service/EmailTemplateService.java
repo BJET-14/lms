@@ -34,13 +34,17 @@ public class EmailTemplateService {
         return templateEngine.process("user-welcome-email-signup.html", context);
     }
 
-    public String getClassScheduleEmailTemplate(String receiverName, String courseTitle, String teacherName, List<DetailClassSchedule> schedules){
+    public String getClassScheduleEmailTemplate(String receiverName, String courseTitle, String teacherName, List<DetailClassSchedule> schedules, String classLink, boolean isSendingToStudent){
         logger.info("Generating a class scheduler email for Teacher.Name={}", receiverName);
         Context context = new Context();
         context.setVariable("receiverName", receiverName);
         context.setVariable("courseTitle", courseTitle);
         context.setVariable("teacherName", teacherName);
         context.setVariable("schedules", schedules);
-        return templateEngine.process("class-schedule-email.html", context);
+        context.setVariable("classLink", classLink);
+        if(!isSendingToStudent){
+            return templateEngine.process("class-schedule-email.html", context);
+        }
+        return templateEngine.process("class-schedule-email-student.html", context);
     }
 }

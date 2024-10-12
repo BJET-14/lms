@@ -31,4 +31,11 @@ public class EmailNotificationConsumer {
         emailService.sendEmail(classScheduleSentToEmailRequest);
     }
 
+    @KafkaListener(topics = "class-schedule-student-topic")
+    public void classScheduleToStudentNotifications(ClassScheduleSentToEmailRequest classScheduleSentToEmailRequest) throws MessagingException {
+        log.info(format("Consuming the message from class-schedule-student-topic Topic. Receiver= %s", classScheduleSentToEmailRequest.getReceiverEmailAddress()));
+        classScheduleSentToEmailRequest.setSubject("Class schedule for " + classScheduleSentToEmailRequest.getCourseTitle());
+        emailService.sendEmail(classScheduleSentToEmailRequest);
+    }
+
 }

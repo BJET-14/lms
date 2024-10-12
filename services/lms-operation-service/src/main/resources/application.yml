@@ -24,6 +24,10 @@ spring:
     bootstrap-servers: localhost:9092
   application:
     name: lms-operation-service
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
 
 lms:
   openapi:

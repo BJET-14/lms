@@ -11,13 +11,12 @@ import com.bjet.aki.lms.repository.ExamResultRepository;
 import com.bjet.aki.lms.util.ExcelUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.text.StrBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -29,6 +28,7 @@ public class ExamService {
     private final ExamResultRepository examResultRepository;
     private final ExamMapper examMapper;
     private final CourseService courseService;
+    private final FileManagementService fileManagementService;
 
     public Long save(Long courseId, Exam request) {
         log.info("Saving exams for course. Id: {}", courseId);
@@ -52,6 +52,8 @@ public class ExamService {
 
     public void saveResult(MultipartFile file, Long examId) {
         try {
+            GoogleDriveUploadResponse response = fileManagementService.uploadFilesToGoogleDrive(file, FileType.EXCEL);
+            log.info("Upload response. File name: {}, response: {}", file.getOriginalFilename(), (response.getStatus() == 200 ? "Success" : "Fail"));
             List<ExamResultEntity> results = ExcelUtils.excelToExamResult(file.getInputStream(), examId);
             examResultRepository.saveAll(results);
         } catch (IOException e) {
@@ -72,10 +74,17 @@ public class ExamService {
     public ExamResultDetails getResultDetails(Long examId) {
         ExamEntity examEntity = examRepository.findById(examId).orElseThrow(() -> new CommonException("05", "Exam not found"));
         ExamResultDetails details = examMapper.toResultDetails().map(examEntity);
-        List<ExamResultEntity> resultEntities = examResultRepository.findAllByExamIdOrderByMark(examId);
+        List<ExamResultEntity> resultEntities = examResultRepository.findAllByExamIdOrderByStudentId(examId);
+
+        Double minScore = !resultEntities.isEmpty() ? resultEntities.stream().map(ExamResultEntity::getMark)
+                .min(Comparator.comparing(Double::valueOf))
+                .get(): 0;
+        Double maxScore = !resultEntities.isEmpty() ? resultEntities.stream().map(ExamResultEntity::getMark)
+                .max(Comparator.comparing(Double::valueOf))
+                .get(): 0;
+        details.setLowestMark(minScore);
+        details.setHighestMark(maxScore);
         List<ExamResult> examResults = ListResultBuilder.build(resultEntities, examMapper.toResultDomain());
-        details.setLowestMark(examResults.size() != 0 ? examResults.get(0).getMark(): 0);
-        details.setHighestMark(examResults.size() != 0 ? examResults.get(examResults.size()-1).getMark() : 0);
         details.setResults(examResults);
         return details;
     }

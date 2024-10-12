@@ -47,6 +47,22 @@ public class ExamController {
         return ResponseEntity.ok(exams);
     }
 
+    @GetMapping("/{examId}/template")
+    public ResponseEntity<Resource> getFile(@PathVariable("courseId") Long courseId, @PathVariable Long examId) {
+        if(!courseService.isExist(courseId)){
+            return ResponseEntity.notFound().build();
+        }
+        if(!examService.isExist(examId)){
+            return ResponseEntity.notFound().build();
+        }
+        String filename = examService.generateFileName(courseId, examId);
+        InputStreamResource file = new InputStreamResource(examService.load(courseId, examId));
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+                .body(file);
+    }
+
     @PostMapping(path = "/{examId}/upload-results")
     public ResponseEntity<Void> uploadResults(@PathVariable("courseId") Long courseId,
                                               @PathVariable("examId") Long examId,
@@ -63,22 +79,6 @@ public class ExamController {
             }
         }
         return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/{examId}/template")
-    public ResponseEntity<Resource> getFile(@PathVariable("courseId") Long courseId, @PathVariable Long examId) {
-        if(!courseService.isExist(courseId)){
-            return ResponseEntity.notFound().build();
-        }
-        if(!examService.isExist(examId)){
-            return ResponseEntity.notFound().build();
-        }
-        String filename = examService.generateFileName(courseId, examId);
-        InputStreamResource file = new InputStreamResource(examService.load(courseId, examId));
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
-                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
-                .body(file);
     }
 
     @GetMapping(path = "{examId}/result")

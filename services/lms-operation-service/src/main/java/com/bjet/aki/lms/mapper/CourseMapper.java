@@ -25,16 +25,32 @@ public class CourseMapper {
     private final CourseScheduleMapper courseScheduleMapper;
 
     public ResultMapper<Course, CourseEntity> toEntity() {
-        return domain -> courseRepository.findById(domain.getId())
-                .orElseGet(CourseEntity::new)
-                .setTitle(domain.getTitle())
-                .setDescription(domain.getDescription())
-                .setStartDate(domain.getStartDate())
-                .setEndDate(domain.getEndDate())
-                .setModules(domain.getModules()
+        return domain -> {
+            CourseEntity courseEntity = courseRepository.findById(domain.getId())
+                    .orElseGet(CourseEntity::new);
+            if(domain.getTitle() != null){
+                courseEntity.setTitle(domain.getTitle());
+            }
+            if(domain.getDescription() != null){
+                courseEntity.setDescription(domain.getDescription());
+            }
+            if(domain.getStartDate() != null){
+                courseEntity.setStartDate(domain.getStartDate());
+            }
+            if(domain.getEndDate() != null){
+                courseEntity.setEndDate(domain.getEndDate());
+            }
+            if(domain.getClassMeetingLink() != null){
+                courseEntity.setClassMeetingLink(domain.getClassMeetingLink());
+            }
+            if (domain.getModules() != null) {
+                courseEntity.setModules(domain.getModules()
                         .stream()
                         .map(module -> moduleDomainToEntity().map(module))
                         .toList());
+            }
+            return courseEntity;
+        };
     }
 
     public ResultMapper<CourseEntity, Course> toDomain() {
@@ -66,9 +82,9 @@ public class CourseMapper {
                 .setDescription(domain.getDescription());
     }
 
-    public ClassScheduleSentToEmailRequest toEmailNotificationToTeacherWithClassSchedule(Teacher teacher, CourseEntity course, List<ClassScheduleEntity> courseSchedules) {
+    public ClassScheduleSentToEmailRequest toEmailNotificationToTeacherWithClassSchedule(String receiverEmailAddress, Teacher teacher, CourseEntity course, List<ClassScheduleEntity> courseSchedules) {
         ClassScheduleSentToEmailRequest request = new ClassScheduleSentToEmailRequest();
-        request.setReceiverEmailAddress(teacher.getEmail());
+        request.setReceiverEmailAddress(receiverEmailAddress);
         request.setReceiverName(teacher.getFirstName() + " " + teacher.getLastName());
         request.setTeacherName(teacher.getFirstName() + " " + teacher.getLastName());
         request.setCourseTitle(course.getTitle());
@@ -85,6 +101,7 @@ public class CourseMapper {
             detailClassSchedules.add(detailClassSchedule);
         }
         request.setClassSchedules(detailClassSchedules);
+        request.setSendingToStudent(!receiverEmailAddress.equals(teacher.getEmail()));
         return request;
     }
 }

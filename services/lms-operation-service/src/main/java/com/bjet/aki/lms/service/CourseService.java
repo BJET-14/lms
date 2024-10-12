@@ -113,14 +113,26 @@ public class CourseService {
         entity.setTeacherId(request.getTeacherId());
         courseRepository.save(entity);
 
-        sendEmailNotificationToTeacherWithSchedule(entity, teacher);
+        sendEmailNotificationWithSchedule(teacher.getEmail(), entity, teacher);
     }
 
-    private void sendEmailNotificationToTeacherWithSchedule(CourseEntity course, Teacher teacher) {
-        logger.info("Sending course schedule to teacher. Email: {}", teacher.getEmail());
+    private void sendEmailNotificationWithSchedule(String receiverEmailAddress, CourseEntity course) {
+        Teacher teacher = userService.findTeacher(course.getTeacherId());
+        if(teacher == null) {
+            throw new CommonException("02", "Could not find teacher");
+        }
+        sendEmailNotificationWithSchedule(receiverEmailAddress, course, teacher);
+    }
+
+    private void sendEmailNotificationWithSchedule(String receiverEmailAddress, CourseEntity course, Teacher teacher) {
         List<ClassScheduleEntity> classSchedules = classScheduleRepository.findAllByCourse_Id(course.getId());
-        ClassScheduleSentToEmailRequest request = courseMapper.toEmailNotificationToTeacherWithClassSchedule(teacher, course, classSchedules);
-        notificationService.sendEmailWithClassScheduleToTeacher(request);
+        ClassScheduleSentToEmailRequest request = courseMapper.toEmailNotificationToTeacherWithClassSchedule(receiverEmailAddress, teacher, course, classSchedules);
+        logger.info("Sending course schedule. Email to: {}", request.getReceiverEmailAddress());
+        if (request.isSendingToStudent()) {
+            notificationService.sendEmailWithClassScheduleToStudent(request);
+        } else {
+            notificationService.sendEmailWithClassScheduleToTeacher(request);
+        }
     }
 
     @Transactional
@@ -178,18 +190,26 @@ public class CourseService {
         return null;
     }
 
+    @Transactional
     public Long enroll(Long courseId, StudentEnrollmentRequest request) {
+        Student student = userService.findStudent(request.getStudentId());
+
         StudentEnrollmentEntity entity = new StudentEnrollmentEntity();
         entity.setCourseId(courseId);
-        entity.setStudentId(request.getStudentId());
+        entity.setStudentId(student.getId());
         entity.setEnrollmentDate(LocalDate.now());
         entity = studentEnrollmentRepository.save(entity);
+
+        // sending email to students with class schedule
+        CourseEntity course = courseRepository.findById(courseId).orElseThrow(() -> new CommonException("03", "Could not find course"));
+        sendEmailNotificationWithSchedule(student.getEmail(), course);
         return entity.getId();
     }
 
+    @Transactional
     public List<StudentEnrollment> getAllEnrolledStudents(Long courseId) {
         List<StudentEnrollmentEntity> enrollmentEntities = studentEnrollmentRepository.findAllByCourseId(courseId);
-        List<StudentEnrollment> studentEnrollments = enrollmentEntities.stream()
+        return enrollmentEntities.stream()
                 .map(entity -> {
                     StudentEnrollment studentEnrollment = new StudentEnrollment();
                     studentEnrollment.setStudentId(entity.getStudentId());
@@ -202,7 +222,6 @@ public class CourseService {
                     return studentEnrollment;
                 })
                 .toList();
-        return studentEnrollments;
     }
 
     public List<Student> findStudentsByCourse(Long courseId) {

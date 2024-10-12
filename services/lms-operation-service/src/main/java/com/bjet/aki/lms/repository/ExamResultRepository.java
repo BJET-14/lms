@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ExamResultRepository extends JpaRepository<ExamResultEntity, Long> {
-    List<ExamResultEntity> findAllByExamIdOrderByMark(Long examId);
+    List<ExamResultEntity> findAllByExamIdOrderByStudentId(Long examId);
 }

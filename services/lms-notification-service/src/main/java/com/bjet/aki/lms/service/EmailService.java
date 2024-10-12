@@ -58,7 +58,7 @@ public class EmailService {
                 .map(schedule -> schedule.setFormattedDate(formatter.format(schedule.getDate())))
                 .toList();
         try {
-            String htmlBody = templateService.getClassScheduleEmailTemplate(request.getReceiverName(), request.getCourseTitle(), request.getTeacherName(), detailClassSchedules);
+            String htmlBody = templateService.getClassScheduleEmailTemplate(request.getReceiverName(), request.getCourseTitle(), request.getTeacherName(), detailClassSchedules, request.getClassMeetingLink(), request.isSendingToStudent());
             helper.setText(htmlBody, true);
             mailSender.send(message);
             log.info("Email sent.");

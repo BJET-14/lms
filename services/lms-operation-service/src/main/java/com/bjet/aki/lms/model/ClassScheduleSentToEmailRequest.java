@@ -18,4 +18,5 @@ public class ClassScheduleSentToEmailRequest {
     private String courseTitle;
     private String classMeetingLink;
     private List<DetailClassSchedule> classSchedules;
+    private boolean isSendingToStudent;
 }

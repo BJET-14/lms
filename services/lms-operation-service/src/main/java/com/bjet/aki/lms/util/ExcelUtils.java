@@ -108,7 +108,7 @@ public class ExcelUtils {
                 Row currentRow = rows.next();
 
                 // skip header
-                if (rowNumber == 0 || rowNumber == 1 || rowNumber == 2 || rowNumber == 3) {
+                if (rowNumber == 0 || rowNumber == 1 || rowNumber == 2) {
                     rowNumber++;
                     continue;
                 }
