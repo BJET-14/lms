@@ -35,7 +35,7 @@ public class EmailTemplateService {
     }
 
     public String getClassScheduleEmailTemplate(String receiverName, String courseTitle, String teacherName, List<DetailClassSchedule> schedules, String classLink, boolean isSendingToStudent){
-        logger.info("Generating a class scheduler email for Teacher.Name={}", receiverName);
+        logger.info("Generating a class scheduler email. Receiver name={}", receiverName);
         Context context = new Context();
         context.setVariable("receiverName", receiverName);
         context.setVariable("courseTitle", courseTitle);
@@ -46,5 +46,16 @@ public class EmailTemplateService {
             return templateEngine.process("class-schedule-email.html", context);
         }
         return templateEngine.process("class-schedule-email-student.html", context);
+    }
+
+    public String getExamLinkSendEmailTemplate(String examName, String studentName, String examLink, Double fullMark, Double passedMark) {
+        logger.info("Generating a exam link sending email for Student. Receiver name={}", studentName);
+        Context context = new Context();
+        context.setVariable("receiverName", studentName);
+        context.setVariable("examName", examName);
+        context.setVariable("examLink", examLink);
+        context.setVariable("fullMark", fullMark);
+        context.setVariable("passedMark", passedMark);
+        return templateEngine.process("exam-link-email-student.html", context);
     }
 }

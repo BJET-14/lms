@@ -1,5 +1,6 @@
 package com.bjet.aki.lms.service;
 
+import com.bjet.aki.lms.exception.CommonException;
 import com.bjet.aki.lms.model.AuthenticationRequest;
 import com.bjet.aki.lms.model.AuthenticationResponse;
 import com.bjet.aki.lms.model.User;
@@ -37,7 +38,7 @@ public class AuthenticationService {
         Boolean existResponse = restTemplate.getForObject("http://lms-common-service/commons/users/exist?email=" + user.getEmail(), Boolean.class);
         if(existResponse != null ){
             if(existResponse){
-                throw new RuntimeException("User already exist");
+                throw new CommonException("15", "User already exist");
             }
         }
         UserSaveRequest request = UserSaveRequest.builder()
@@ -73,7 +74,7 @@ public class AuthenticationService {
                     .build();
         } else{
             logger.error("Failed authentication from lms-gateway. Exception throws from lms-common-service. email={}", request.getEmail());
-            throw new RuntimeException("Authentication failed. Please contact administrator");
+            throw new CommonException("14", "Authentication failed. Please contact administrator");
         }
     }
 
@@ -104,7 +105,7 @@ public class AuthenticationService {
         final String refreshToken;
         final String userEmail;
         if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
-            throw new RuntimeException("missing authorization header");
+            throw new CommonException("11", "missing authorization header");
         }
         refreshToken = authHeader.substring(7);
         userEmail = jwtService.extractUsername(refreshToken);
@@ -123,7 +124,7 @@ public class AuthenticationService {
                 }
             }
         } else {
-            throw new RuntimeException("un authorized access to application");
+            throw new CommonException("12", "un authorized access to application");
         }
         return null;
     }

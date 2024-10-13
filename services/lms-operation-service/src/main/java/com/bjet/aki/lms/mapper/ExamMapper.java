@@ -3,9 +3,7 @@ package com.bjet.aki.lms.mapper;
 import com.bjet.aki.lms.asset.ResultMapper;
 import com.bjet.aki.lms.jpa.ExamEntity;
 import com.bjet.aki.lms.jpa.ExamResultEntity;
-import com.bjet.aki.lms.model.Exam;
-import com.bjet.aki.lms.model.ExamResult;
-import com.bjet.aki.lms.model.ExamResultDetails;
+import com.bjet.aki.lms.model.*;
 import com.bjet.aki.lms.repository.ExamRepository;
 import com.bjet.aki.lms.repository.ExamResultRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +24,7 @@ public class ExamMapper {
                 .setDescription(domain.getDescription())
                 .setGoogleFormLink(domain.getGoogleFormLink())
                 .setFullMarks(domain.getFullMark())
+                .setPassMark(domain.getPassMark())
                 .setCourseId(courseId);
     }
 
@@ -65,5 +64,17 @@ public class ExamMapper {
                 .setExamType(entity.getType())
                 .setFullMark(entity.getFullMarks());
 
+    }
+
+    public ExamLinkSentToStudentRequest toEmailRequest(ExamEntity exam, Student student) {
+        ExamLinkSentToStudentRequest request = new ExamLinkSentToStudentRequest();
+        request.setReceiverEmail(student.getEmail());
+        request.setSubject("Exam link: " + exam.getName() + " has opened");
+        request.setExamName(exam.getName());
+        request.setExamLink(exam.getGoogleFormLink());
+        request.setStudentName(student.getFirstName() + " " + student.getLastName());
+        request.setFullMark(exam.getFullMarks());
+        request.setPassedMark(exam.getPassMark());
+        return request;
     }
 }

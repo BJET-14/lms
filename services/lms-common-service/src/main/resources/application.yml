@@ -1,6 +1,7 @@
 server:
   port: 8050
 
+
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -24,6 +25,10 @@ spring:
     bootstrap-servers: localhost:9092
   application:
     name: lms-common-service
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
 
 lms:
   openapi:

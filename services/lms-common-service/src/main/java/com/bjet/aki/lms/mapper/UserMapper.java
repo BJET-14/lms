@@ -12,6 +12,7 @@ import com.bjet.aki.lms.repository.AdminRepository;
 import com.bjet.aki.lms.repository.StudentRepository;
 import com.bjet.aki.lms.repository.TeacherRepository;
 import com.bjet.aki.lms.repository.UserRepository;
+import com.bjet.aki.lms.util.ImageUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -20,17 +21,15 @@ import org.springframework.stereotype.Component;
 public class UserMapper {
 
     private final UserRepository userRepository;
-    private final StudentRepository studentRepository;
-    private final TeacherRepository teacherRepository;
-    private final AdminRepository adminRepository;
 
-    public ResultMapper<UserEntity, User> toUserDomain(boolean passwordRequired){
+    public ResultMapper<UserEntity, User> toUserDomain(boolean passwordRequired, boolean imageRequired) {
         return entity -> new User()
                 .setId(entity.getId())
                 .setEmail(entity.getEmail())
                 .setFirstName(entity.getFirstName())
                 .setLastName(entity.getLastName())
                 .setRole(entity.getRole())
+                .setProfilePicture(imageRequired && entity.getProfilePicture() != null ? ImageUtils.decompressImage(entity.getProfilePicture()) : null)
                 .setPassword(passwordRequired ? entity.getPassword() : null);
     }
 

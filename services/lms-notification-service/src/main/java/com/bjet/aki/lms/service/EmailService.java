@@ -2,6 +2,7 @@ package com.bjet.aki.lms.service;
 
 import com.bjet.aki.lms.model.ClassScheduleSentToEmailRequest;
 import com.bjet.aki.lms.model.DetailClassSchedule;
+import com.bjet.aki.lms.model.ExamLinkSentToStudentRequest;
 import com.bjet.aki.lms.model.RegistrationSuccessNotificationRequest;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -12,7 +13,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -66,6 +66,26 @@ public class EmailService {
             log.error("Could not send email.", e);
             String err = String.format("There was an error sending an email to %s." +
                     "Please verify the email is valid and try again.", request.getReceiverEmailAddress());
+            throw new RuntimeException(err);
+        }
+    }
+
+    public void sendEmail(ExamLinkSentToStudentRequest request) throws MessagingException {
+        log.info("Sending email. to={} subject={}", request.getReceiverEmail(), request.getSubject());
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        helper.setFrom("bjet.aki.info@gmail.com");
+        helper.setTo(request.getReceiverEmail());
+        helper.setSubject(request.getSubject());
+        try {
+            String htmlBody = templateService.getExamLinkSendEmailTemplate(request.getExamName(), request.getStudentName(), request.getExamLink(), request.getFullMark(), request.getPassedMark());
+            helper.setText(htmlBody, true);
+            mailSender.send(message);
+            log.info("Email sent.");
+        } catch (MessagingException e) {
+            log.error("Could not send email.", e);
+            String err = String.format("There was an error sending an email to %s." +
+                    "Please verify the email is valid and try again.", request.getReceiverEmail());
             throw new RuntimeException(err);
         }
     }

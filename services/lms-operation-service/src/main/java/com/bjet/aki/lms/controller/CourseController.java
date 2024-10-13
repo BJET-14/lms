@@ -5,6 +5,7 @@ import com.bjet.aki.lms.model.*;
 import com.bjet.aki.lms.service.CourseService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import org.apache.commons.math3.util.MathArrays;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -112,5 +113,23 @@ public class CourseController {
         }
         List<StudentEnrollment> studentEnrollments = courseService.getAllEnrolledStudents(courseId);
         return ResponseEntity.ok().body(studentEnrollments);
+    }
+
+    @PostMapping(path = "{courseId}/post")
+    public ResponseEntity<Void> savePost(@PathVariable Long courseId, @RequestBody Post post){
+        if(!courseService.isExist(courseId)){
+            return ResponseEntity.notFound().build();
+        }
+        courseService.savePost(courseId, post);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(path = "{courseId}/post")
+    public ResponseEntity<List<Post>> getPosts(@PathVariable Long courseId){
+        if(!courseService.isExist(courseId)){
+            return ResponseEntity.notFound().build();
+        }
+        List<Post> posts = courseService.getPosts(courseId);
+        return ResponseEntity.ok(posts);
     }
 }

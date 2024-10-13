@@ -29,10 +29,20 @@ public class ExamService {
     private final ExamMapper examMapper;
     private final CourseService courseService;
     private final FileManagementService fileManagementService;
+    private final EmailNotificationService emailNotificationService;
+    private final UserService userService;
 
     public Long save(Long courseId, Exam request) {
         log.info("Saving exams for course. Id: {}", courseId);
         ExamEntity exam = examRepository.save(examMapper.toEntity(courseId).map(request));
+        List<StudentEnrollment> enrolledStudent = courseService.getAllEnrolledStudents(courseId);
+        if (!enrolledStudent.isEmpty()) {
+            for(StudentEnrollment studentEnrollment : enrolledStudent) {
+                Student student = userService.findStudent(studentEnrollment.getStudentId());
+                ExamLinkSentToStudentRequest emailRequest = examMapper.toEmailRequest(exam, student);
+                emailNotificationService.sendEmailWithExamLinkToStudent(emailRequest);
+            }
+        }
         return exam.getId();
     }
 

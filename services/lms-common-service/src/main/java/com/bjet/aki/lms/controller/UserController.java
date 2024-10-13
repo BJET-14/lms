@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class UserController {
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> getUsers(@PathVariable("id") Long id){
-        User user = userService.findbyId(id);
+        User user = userService.findById(id);
         return ResponseEntity.ok(user);
     }
 
@@ -51,6 +52,15 @@ public class UserController {
     public ResponseEntity<Long> registerUser(@RequestBody UserSaveRequest request){
         Long id = userService.saveUser(request);
         return ResponseEntity.ok(id);
+    }
+
+    @PostMapping(path = "/{id}/profile-picture")
+    public ResponseEntity<?> uploadProfilePicture(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file){
+        if(!userService.isExist(id)){
+            return ResponseEntity.notFound().build();
+        }
+        userService.uploadProfilePicture(id, file);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping(path = "/email")

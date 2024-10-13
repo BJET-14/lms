@@ -1,5 +1,6 @@
 package com.bjet.aki.lms.service;
 
+import com.bjet.aki.lms.exception.CommonException;
 import com.bjet.aki.lms.model.User;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -42,6 +43,7 @@ public class LmsUserDetailsService implements UserDetailsService {
             }
         } catch (Exception e){
             logger.error("Exception occurred in lms-common-service, email={}", username);
+            throw new CommonException("12", "User not exist");
         }
         return Optional.empty();
     }

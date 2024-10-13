@@ -1,5 +1,6 @@
 package com.bjet.aki.lms.filter;
 
+import com.bjet.aki.lms.exception.CommonException;
 import com.bjet.aki.lms.service.JwtService;
 import com.bjet.aki.lms.token.TokenRepository;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -29,7 +30,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
         return ((exchange, chain) -> {
             if(routeValidator.isSecured.test(exchange.getRequest())){
                 if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-                    throw new RuntimeException("missing authorization header");
+                    throw new CommonException("00", "missing authorization header");
                 }
                 String authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
                 if (authHeader != null && authHeader.startsWith("Bearer ")) {

@@ -7,6 +7,7 @@ import com.bjet.aki.lms.asset.ResultBuilder;
 import com.bjet.aki.lms.exception.CommonException;
 import com.bjet.aki.lms.jpa.*;
 import com.bjet.aki.lms.mapper.CourseScheduleMapper;
+import com.bjet.aki.lms.mapper.PostMapper;
 import com.bjet.aki.lms.model.*;
 import com.bjet.aki.lms.mapper.CourseMapper;
 import com.bjet.aki.lms.repository.*;
@@ -28,6 +29,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
+
 @Service
 @RequiredArgsConstructor
 public class CourseService {
@@ -44,6 +47,8 @@ public class CourseService {
     private final ClassScheduleRepository classScheduleRepository;
     private final EmailNotificationService notificationService;
     private final StudentEnrollmentRepository studentEnrollmentRepository;
+    private final PostRepository postRepository;
+    private final PostMapper postMapper;
 
     @Transactional
     public Long saveCourse(Course course) {
@@ -192,6 +197,10 @@ public class CourseService {
 
     @Transactional
     public Long enroll(Long courseId, StudentEnrollmentRequest request) {
+        boolean exists = studentEnrollmentRepository.existsByCourseIdAndStudentId(courseId, request.getStudentId());
+        if(exists){
+            throw new CommonException("02", "Student already enrolled");
+        }
         Student student = userService.findStudent(request.getStudentId());
 
         StudentEnrollmentEntity entity = new StudentEnrollmentEntity();
@@ -209,9 +218,13 @@ public class CourseService {
     @Transactional
     public List<StudentEnrollment> getAllEnrolledStudents(Long courseId) {
         List<StudentEnrollmentEntity> enrollmentEntities = studentEnrollmentRepository.findAllByCourseId(courseId);
+        if(enrollmentEntities.isEmpty()){
+            return emptyList();
+        }
         return enrollmentEntities.stream()
                 .map(entity -> {
                     StudentEnrollment studentEnrollment = new StudentEnrollment();
+                    studentEnrollment.setId(entity.getId());
                     studentEnrollment.setStudentId(entity.getStudentId());
                     Student student = userService.findStudent(entity.getStudentId());
                     studentEnrollment.setStudentName(student.getFirstName() + " " + student.getLastName());
@@ -231,5 +244,16 @@ public class CourseService {
                     Student student = userService.findStudent(entity.getStudentId());
                     return student;
                 }).toList();
+    }
+
+    public void savePost(Long courseId, Post post) {
+        if(post.getMessage() != null){
+            postRepository.save(postMapper.toEntity(courseId).map(post));
+        }
+    }
+
+    public List<Post> getPosts(Long courseId){
+        List<PostEntity> posts = postRepository.findAllByCourseIdOrderById(courseId);
+        return ListResultBuilder.build(posts, postMapper.toDomain());
     }
 }

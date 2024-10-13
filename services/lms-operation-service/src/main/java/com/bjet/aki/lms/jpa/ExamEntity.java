@@ -24,6 +24,7 @@ public class ExamEntity extends BaseEntity {
     private String description;
     private String googleFormLink;
     private Double fullMarks;
+    private Double passMark;
     private ExamType type;
     private Long courseId;
 }
