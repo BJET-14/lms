@@ -3,7 +3,6 @@ package com.bjet.aki.lms.util;
 import com.bjet.aki.lms.jpa.ExamEntity;
 import com.bjet.aki.lms.jpa.ExamResultEntity;
 import com.bjet.aki.lms.model.Course;
-import com.bjet.aki.lms.model.ExamResult;
 import com.bjet.aki.lms.model.Student;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -93,6 +92,10 @@ public class ExcelUtils {
 
     public static boolean hasExcelFormat(MultipartFile file) {
         return ExcelConstants.TYPE.equals(file.getContentType());
+    }
+
+    public static boolean hasCsvFormat(MultipartFile file) {
+        return CsvConstants.TYPE.equals(file.getContentType());
     }
 
     public static List<ExamResultEntity> excelToExamResult(InputStream inputStream, Long examId) {

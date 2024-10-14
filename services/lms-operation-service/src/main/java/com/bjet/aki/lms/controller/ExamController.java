@@ -1,7 +1,7 @@
 package com.bjet.aki.lms.controller;
 
+import com.bjet.aki.lms.exception.CommonException;
 import com.bjet.aki.lms.model.Exam;
-import com.bjet.aki.lms.model.ExamResult;
 import com.bjet.aki.lms.model.ExamResultDetails;
 import com.bjet.aki.lms.service.CourseService;
 import com.bjet.aki.lms.service.ExamService;
@@ -59,7 +59,8 @@ public class ExamController {
         InputStreamResource file = new InputStreamResource(examService.load(courseId, examId));
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
-                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+//                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+                .contentType(MediaType.parseMediaType("application/csv"))
                 .body(file);
     }
 
@@ -70,15 +71,17 @@ public class ExamController {
         if(!courseService.isExist(courseId)){
             return ResponseEntity.notFound().build();
         }
-        if (ExcelUtils.hasExcelFormat(file)) {
+//        if (ExcelUtils.hasExcelFormat(file)) {
+        if (ExcelUtils.hasCsvFormat(file)) {
             try {
                 examService.saveResult(file, examId);
                 return ResponseEntity.ok().build();
             } catch (Exception e) {
                 return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).build();
             }
+        } else {
+            throw new CommonException("19", "File format not supported. Please upload csv file.");
         }
-        return ResponseEntity.ok().build();
     }
 
     @GetMapping(path = "{examId}/result")
