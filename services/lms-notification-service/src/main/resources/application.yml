@@ -24,8 +24,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: bjet.aki.info@gmail.com
-    password: ehbh zgxi pzft wasi
+    username:
+    password:
     default-encoding: UTF-8
     properties:
       mail:
